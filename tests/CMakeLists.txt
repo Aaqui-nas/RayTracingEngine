@@ -14,8 +14,10 @@ add_executable(run_tests
     test_materials.cpp
     test_aabb.cpp
     test_camera.cpp
+    test_textures.cpp
+    ${CMAKE_SOURCE_DIR}/src/materials/materials.cpp
 )
-target_include_directories(run_tests PRIVATE ${CMAKE_SOURCE_DIR})
+target_include_directories(run_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
 target_link_libraries(run_tests PRIVATE Catch2::Catch2WithMain)
 target_compile_features(run_tests PRIVATE cxx_std_17)
 target_compile_options(run_tests PRIVATE -Wall -Wextra)

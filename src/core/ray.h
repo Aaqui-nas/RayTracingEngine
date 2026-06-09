@@ -1,5 +1,5 @@
 #pragma once
-#include "vec3.h"
+#include "core/vec3.h"
 
 namespace rt {
     class Ray {
@@ -9,8 +9,6 @@ namespace rt {
 
         Ray(Vec3d origin, Vec3d direction) : origin(origin), direction(direction) {}
 
-        Vec3d at(double t) const {
-            return origin+t*direction;
-        }
+        Vec3d at(double t) const { return origin + t * direction; }
     };
 }

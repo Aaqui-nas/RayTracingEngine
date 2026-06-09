@@ -1,5 +1,5 @@
 #include <benchmark/benchmark.h>
-#include "camera.h"
+#include "camera/camera.h"
 
 using namespace rt;
 

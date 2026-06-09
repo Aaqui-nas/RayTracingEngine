@@ -1,10 +1,10 @@
 #include <benchmark/benchmark.h>
-#include "scene.h"
-#include "sphere.h"
-#include "plane.h"
-#include "triangle.h"
-#include "mesh.h"
-#include "bvh.h"
+#include "scene/scene.h"
+#include "geometry/sphere.h"
+#include "geometry/plane.h"
+#include "geometry/triangle.h"
+#include "geometry/mesh.h"
+#include "geometry/bvh.h"
 #include <vector>
 #include <memory>
 

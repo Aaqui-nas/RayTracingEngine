@@ -1,8 +1,9 @@
 #pragma once
-#include "triangle.h"
 #include <vector>
+#include "geometry/triangle.h"
 
 namespace rt {
+
     class Mesh : public Shape {
     public:
         std::vector<Triangle> triangles;
@@ -14,13 +15,11 @@ namespace rt {
         std::optional<HitRecord> hit(const Ray& ray, double tmin, double tmax) const override {
             double closest = tmax;
             std::optional<HitRecord> result;
-
-            for (const Triangle& triangle : triangles) {
-                if (auto rec = triangle.hit(ray, tmin, closest)) {
+            for (const Triangle& tri : triangles) {
+                if (auto rec = tri.hit(ray, tmin, closest)) {
                     closest = rec->t;
-                    result = *rec;
+                    result  = *rec;
                 }
-
             }
             return result;
         }
@@ -33,4 +32,5 @@ namespace rt {
             return box;
         }
     };
+
 }

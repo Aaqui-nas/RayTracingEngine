@@ -11,8 +11,10 @@ add_executable(run_benchmarks
     bench_vec3.cpp
     bench_hit.cpp
     bench_camera.cpp
+    bench_textures.cpp
+    ${CMAKE_SOURCE_DIR}/src/materials/materials.cpp
 )
-target_include_directories(run_benchmarks PRIVATE ${CMAKE_SOURCE_DIR})
+target_include_directories(run_benchmarks PRIVATE ${CMAKE_SOURCE_DIR}/src)
 target_link_libraries(run_benchmarks PRIVATE benchmark::benchmark benchmark::benchmark_main)
 target_compile_features(run_benchmarks PRIVATE cxx_std_17)
 target_compile_options(run_benchmarks PRIVATE -O3 -march=native)

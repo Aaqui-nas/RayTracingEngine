@@ -1,12 +1,12 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
 #include <memory>
-#include "vec3.h"
-#include "aabb.h"
-#include "bvh.h"
-#include "sphere.h"
-#include "triangle.h"
-#include "mesh.h"
+#include "core/vec3.h"
+#include "geometry/aabb.h"
+#include "geometry/bvh.h"
+#include "geometry/sphere.h"
+#include "geometry/triangle.h"
+#include "geometry/mesh.h"
 
 using namespace rt;
 using Catch::Approx;

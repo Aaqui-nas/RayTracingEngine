@@ -1,8 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
-#include "shape.h"
-#include "ray.h"
-#include "vec3.h"
+#include "geometry/shape.h"
+#include "core/ray.h"
+#include "core/vec3.h"
 #include <cmath>
 #include <random>
 

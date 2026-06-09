@@ -1,8 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/catch_approx.hpp>
-#include "scene.h"
-#include "sphere.h"
-#include "plane.h"
+#include "scene/scene.h"
+#include "geometry/sphere.h"
+#include "geometry/plane.h"
 
 using namespace rt;
 using Catch::Approx;
