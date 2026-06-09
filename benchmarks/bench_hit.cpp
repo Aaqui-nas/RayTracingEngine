@@ -4,6 +4,7 @@
 #include "plane.h"
 #include "triangle.h"
 #include "mesh.h"
+#include "bvh.h"
 #include <vector>
 #include <memory>
 
@@ -141,5 +142,25 @@ static void BM_Mesh_Hit(benchmark::State& state) {
 }
 BENCHMARK(BM_Mesh_Hit)->Range(10, 10000)->RangeMultiplier(10);
 
-// ── Contexte : après TP14, BM_Mesh_Hit sera comparé à BM_BVH_Hit ─────────────
-// La différence attendue : O(n) → O(log n), soit 100-1000× sur de gros datasets.
+// ── BVH::hit (O(log n)) vs Mesh::hit (O(n)) ──────────────────────────────────
+// Comparaison directe après TP14 : le BVH amortit le coût sur de grands datasets.
+
+static void BM_BVH_Hit(benchmark::State& state) {
+    const int N = state.range(0);
+    std::vector<std::shared_ptr<Shape>> shapes;
+    shapes.reserve(N);
+    for (int i = 0; i < N; i++) {
+        double x = (i % 10) * 3.0;
+        double z = -(i / 10) * 3.0 - 2.0;
+        shapes.push_back(std::make_shared<Sphere>(Vec3d(x, 0, z), 0.4, null_mat));
+    }
+    BVHNode bvh(shapes, 0, N);
+    Ray r(Vec3d(0.2, 0, 0), Vec3d(0, 0, -1));
+
+    for (auto _ : state) {
+        auto hit = bvh.hit(r, 0.001, 1000.0);
+        benchmark::DoNotOptimize(hit);
+    }
+    state.SetItemsProcessed(state.iterations() * N);
+}
+BENCHMARK(BM_BVH_Hit)->Range(10, 10000)->RangeMultiplier(10);

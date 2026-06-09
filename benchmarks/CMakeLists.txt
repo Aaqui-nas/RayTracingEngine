@@ -10,6 +10,7 @@ FetchContent_MakeAvailable(googlebenchmark)
 add_executable(run_benchmarks
     bench_vec3.cpp
     bench_hit.cpp
+    bench_camera.cpp
 )
 target_include_directories(run_benchmarks PRIVATE ${CMAKE_SOURCE_DIR})
 target_link_libraries(run_benchmarks PRIVATE benchmark::benchmark benchmark::benchmark_main)

@@ -1,0 +1,27 @@
+# Scène DOF — profondeur de champ
+# Caméra 3 avec aperture augmentée à 0.3 pour un effet visible
+# Focus sur la sphère or (distance ~4) — tout le reste est flou
+
+camera  0 1 4   0 0.5 0   0 1 0   45   0.05  4.0
+
+# Sol
+plane   0.0 0.0 0.0   0.0 1.0 0.0   checker
+
+# Lumière
+light   1.0 6.0 3.0   1.0   520 480 440
+
+# ── En focus (distance ≈ 4.0 depuis la caméra) ──────────────────────────────
+sphere   0.0  0.5  0.0   0.5   gold
+
+# ── Légèrement derrière (distance ≈ 6) — flou modéré ────────────────────────
+sphere  -1.5  0.5 -2.0   0.5   red
+sphere   1.5  0.5 -2.0   0.5   blue
+
+# ── Loin (distance ≈ 9) — très flou ─────────────────────────────────────────
+sphere   0.0  0.5 -5.0   0.6   glass
+sphere  -2.0  0.5 -5.0   0.5   copper
+sphere   2.0  0.5 -5.0   0.5   silver
+
+# ── Devant la mise au point (distance ≈ 2.5) — flou aussi ───────────────────
+sphere  -1.2  0.5  2.0   0.4   glass_rose
+sphere   1.2  0.5  2.0   0.4   fuzzy_metal

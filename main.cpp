@@ -77,11 +77,11 @@ int main(int argc, char* argv[]) {
     const int width  = (int)(400 * multiplier);
     const int height = (int)(225 * multiplier);
 
-    const Camera camera;
+    Camera camera;
 
     std::map<std::string, Material> materials = build_materials();
 
-    Scene scene = load_scene("scene.txt", materials);
+    Scene scene = load_scene("scene_dof.txt", materials, camera, width / height);
     scene.build_bvh();
 
     std::vector<Pixel> pixels(width * height);

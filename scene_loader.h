@@ -9,9 +9,10 @@
 #include "sphere.h"
 #include "plane.h"
 #include "obj_loader.h"
+#include "camera.h"
 
 namespace rt {
-    Scene load_scene(const std::string& filename, const std::map<std::string, Material>& materials) {
+    Scene load_scene(const std::string& filename, const std::map<std::string, Material>& materials, Camera& camera, double aspect_ratio) {
         Scene scene;
         std::ifstream file(filename);
 
@@ -57,6 +58,10 @@ namespace rt {
                 std::string path;
                 ss >> path >> material;
                 scene.add(load_obj(path, get_material(material)));
+            } else if (type == "camera") {
+                double x1, y1, z1, x2, y2, z2, x3, y3, z3, fov, aperture, focus;
+                ss >> x1 >> y1 >> z1 >> x2 >> y2 >> z2 >> x3 >> y3 >> z3 >> fov  >> aperture >> focus;
+                camera = Camera(Vec3d(x1,y1,z1), Vec3d(x2,y2,z2), Vec3d(x3,y3,z3), fov, aspect_ratio, aperture, focus);
             } else if (!type.empty() && type != "#") {
                 std::cerr << "Type inconnu: " << type << "\n";
             }

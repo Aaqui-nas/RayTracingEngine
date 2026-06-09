@@ -13,6 +13,7 @@ add_executable(run_tests
     test_scene.cpp
     test_materials.cpp
     test_aabb.cpp
+    test_camera.cpp
 )
 target_include_directories(run_tests PRIVATE ${CMAKE_SOURCE_DIR})
 target_link_libraries(run_tests PRIVATE Catch2::Catch2WithMain)
