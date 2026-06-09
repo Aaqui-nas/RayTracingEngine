@@ -1,0 +1,45 @@
+# ── Build directories ─────────────────────────────────────────────────────────
+build/
+cmake-build-*/
+
+# ── CMake artefacts (in-source et out-of-source) ──────────────────────────────
+CMakeCache.txt
+CMakeFiles/
+Makefile
+cmake_install.cmake
+CTestTestfile.cmake
+DartConfiguration.tcl
+*.cmake
+!CMakeLists.txt           # ne pas ignorer les fichiers sources CMake
+
+# ── FetchContent (Catch2, Google Benchmark) ───────────────────────────────────
+_deps/
+
+# ── CTest ─────────────────────────────────────────────────────────────────────
+Testing/
+
+# ── Binaires compilés ─────────────────────────────────────────────────────────
+raytracer
+run_tests
+run_benchmarks
+*.exe
+
+# ── Artefacts de compilation ──────────────────────────────────────────────────
+*.o
+*.o.d
+*.a
+*.so
+*.so.*
+*.dylib
+
+# ── Sorties du ray tracer ─────────────────────────────────────────────────────
+*.ppm
+models/        # modèles 3D téléchargés manuellement (non versionnés)
+
+# ── IDE ───────────────────────────────────────────────────────────────────────
+.vscode/
+.idea/
+*.swp
+*.swo
+.DS_Store
+compile_commands.json

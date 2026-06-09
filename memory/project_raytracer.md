@@ -6,6 +6,17 @@ Sortie : images au format PPM.
 ## Pourquoi ce projet
 Couvre un large spectre du C++ tout en étant visuellement motivant et pertinent pour le développement de moteurs de jeu.
 
+## Tests et benchmarks
+
+- **Tests unitaires** : `tests/` avec Catch2 v3 (FetchContent)
+  - `test_vec3.cpp`, `test_ray.cpp`, `test_shapes.cpp`, `test_scene.cpp`, `test_materials.cpp`
+  - Lancer : `cmake .. && make run_tests && ctest`
+- **Benchmarks** : `benchmarks/` avec Google Benchmark
+  - `bench_vec3.cpp` (opérations Vec3), `bench_hit.cpp` (sphere/plane/scene O(n))
+  - Lancer : `./build/benchmarks/run_benchmarks`
+  - Le `BM_Scene_Hit` servira de référence "brute force" avant BVH (TP14)
+- **CMake installé requis** : `sudo apt install cmake` si absent
+
 ## Organisation du projet (post-refactor)
 
 - **Un seul répertoire de code** à la racine de `LearnCPP/` — pas de dossiers `TPn/` séparés.

@@ -11,12 +11,20 @@
 ```
 LearnCPP/
 ├── CLAUDE.md
+├── CMakeLists.txt        ← build principal + tests + benchmarks
 ├── memory/               ← mémoire persistante du projet
 │   ├── roadmap_complet.md
 │   └── ...
-├── subjects/             ← TOUS les sujets de TP (TP1.md → TP50.md)
+├── subjects/             ← TOUS les sujets de TP (TP1.md → TP60.md)
 │   ├── TP1.md ... TP14.md, TP12bis.md
 │   └── (nouveaux sujets créés au fil des TPs)
+├── tests/                ← tests unitaires (Catch2)
+│   ├── test_vec3.cpp, test_ray.cpp
+│   ├── test_shapes.cpp, test_scene.cpp
+│   └── test_materials.cpp
+├── benchmarks/           ← microbenchmarks (Google Benchmark)
+│   ├── bench_vec3.cpp
+│   └── bench_hit.cpp
 ├── main.cpp              ← code C++ actif (version courante)
 ├── vec3.h, ray.h, shape.h, sphere.h, plane.h
 ├── scene.h, scene_loader.h
