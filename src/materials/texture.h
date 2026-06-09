@@ -96,4 +96,35 @@ namespace rt {
         }
     };
 
+    class BumpTexture : public Texture {
+        PerlinNoise noise;
+        double scale, strength;
+    public:
+        BumpTexture(double scale = 4.0, double strength = 1.0)
+            : scale(scale), strength(strength) {}
+
+        Vec3d sample(double, double, const Vec3d& p) const override {
+            constexpr double eps = 1e-3;
+
+            Vec3d sp = p * scale;
+
+            double dx =
+                (noise.noise(sp + Vec3d(eps, 0, 0))
+            - noise.noise(sp - Vec3d(eps, 0, 0)))
+                / (2.0 * eps);
+
+            double dy =
+                (noise.noise(sp + Vec3d(0, eps, 0))
+            - noise.noise(sp - Vec3d(0, eps, 0)))
+                / (2.0 * eps);
+
+            double dz =
+                (noise.noise(sp + Vec3d(0, 0, eps))
+            - noise.noise(sp - Vec3d(0, 0, eps)))
+                / (2.0 * eps);
+
+            return Vec3d(dx * strength, dy * strength, dz * strength);
+        }
+    };
+
 }

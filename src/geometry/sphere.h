@@ -30,13 +30,15 @@ namespace rt {
 
             double theta = std::acos(-outward_normal.y);
             double phi   = std::atan2(-outward_normal.z, outward_normal.x) + pi;
-
+            Vec3d tangent = Vec3d(sin(phi), 0.0, cos(phi));
+            if (tangent.length() < 1e-6) tangent = Vec3d(1, 0, 0);
             return HitRecord{
                 t, point,
                 front_face ? outward_normal : -outward_normal,
                 front_face,
                 this->material, this->emission,
-                phi / (2 * pi), theta / pi
+                phi / (2 * pi), theta / pi,
+                tangent
             };
         }
 

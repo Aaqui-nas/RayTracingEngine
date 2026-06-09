@@ -1,5 +1,6 @@
 #include "materials/materials.h"
 #include "materials/texture.h"
+#include "core/mat3.h"
 
 namespace rt {
 
@@ -71,6 +72,28 @@ namespace rt {
         };
     };
 
+    Material normal_mapped(Material base, TexturePtr nmap) {
+        return [base, nmap](const Ray& r, const HitRecord& rec) -> std::optional<Scatter> {
+            Vec3d grad = nmap->sample(rec.u, rec.v, rec.point);
+
+            Vec3d T = rec.tangent;
+            Vec3d N = rec.normal;
+            Vec3d B = N.cross(T);
+            Mat3  tbn{T, B, N};
+
+            double px = std::clamp(-dot(grad, T), -1.0, 1.0);
+            double py = std::clamp(-dot(grad, B), -1.0, 1.0);
+            Vec3d ts = Vec3d(px, py, 1.0).normalized();
+
+            HitRecord perturbed = rec;
+            Vec3d perturbed_n = (tbn * ts).normalized();
+            if (dot(r.direction, perturbed_n) >= 0)
+                perturbed_n = N;
+            perturbed.normal = perturbed_n;
+            return base(r, perturbed);
+        };
+    }
+
     std::map<std::string, Material> build_materials() {
         std::map<std::string, Material> materials;
 
@@ -110,6 +133,34 @@ namespace rt {
         };
         materials["default"]     = lambertian(std::make_shared<SolidColor>(Vec3d(200, 200, 200)));
 
+        // ── Textures UV (sphères) ──────────────────────────────────────────────
+        materials["checker_uv"]  = lambertian(std::make_shared<CheckerTexture>(
+            Vec3d(245, 245, 245), Vec3d(20, 20, 20), 10.0));
+        materials["checker_orange"] = lambertian(std::make_shared<CheckerTexture>(
+            Vec3d(255, 140, 20), Vec3d(40, 20, 10), 8.0));
+        materials["checker_blue_uv"] = lambertian(std::make_shared<CheckerTexture>(
+            Vec3d(30, 90, 220), Vec3d(220, 240, 255), 8.0));
+
+        // ── Textures Perlin ────────────────────────────────────────────────────
+        materials["perlin_marble"] = lambertian(std::make_shared<PerlinTexture>(
+            Vec3d(220, 215, 200), 5.0));
+        materials["perlin_lava"]   = lambertian(std::make_shared<PerlinTexture>(
+            Vec3d(255, 80, 10), 6.0));
+        materials["perlin_moss"]   = lambertian(std::make_shared<PerlinTexture>(
+            Vec3d(80, 160, 60), 4.0));
+
+        materials["bump_marble"] = normal_mapped(
+            lambertian(std::make_shared<SolidColor>(Vec3d(200, 200, 200))),
+            std::make_shared<BumpTexture>(4.0, 1.5)
+        );
+        materials["bump_rocky"] = normal_mapped(
+            lambertian(std::make_shared<SolidColor>(Vec3d(140, 110, 80))),
+            std::make_shared<BumpTexture>(8.0, 3.0)
+        );
+        materials["bump_gold"] = normal_mapped(
+            metal(Vec3d(255, 190, 40), 0.05),
+            std::make_shared<BumpTexture>(2.0, 1)
+        );
         return materials;
     }
 

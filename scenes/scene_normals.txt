@@ -1,0 +1,36 @@
+# Scène de test visuel — textures UV et procédurales
+# Objectif : comparer côte à côte les différents types de textures
+
+camera  0 2.5 8   0 0.3 0   0 1 0   45   0 8
+
+# Sol — checker 3D (world-space)
+plane  0 -1 0   0 1 0   checker
+
+# Lumière principale (haut-droite)
+light   3 8 4   1.0   480 450 420
+
+# ── Rangée arrière : 3 grandes sphères ───────────────────────────────────────
+
+# Checker UV noir/blanc — motif suit le mapping sphérique
+sphere  -2.5  0  0   1.0   checker_uv
+
+# Perlin marble — texture procédurale, aspect pierre/marbre
+sphere   0.0  0  0   1.0   bump_marble
+
+# Checker UV bleu — même technique, couleurs différentes
+sphere   2.5  0  0   1.0   checker_blue_uv
+
+# ── Rangée avant : 3 petites sphères ─────────────────────────────────────────
+
+# Checker orange UV
+sphere  -1.5 -0.4  2.5   0.6   bump_rocky
+
+# Perlin lave — orange vif
+sphere   0.0 -0.4  2.5   0.6   perlin_lava
+
+# Perlin mousse — vert
+sphere   1.5 -0.4  2.5   0.6   bump_gold
+
+# ── Accent ────────────────────────────────────────────────────────────────────
+# Sphère miroir en fond pour refléter la scène
+sphere   0.0  0.5 -3.5   1.5   mirror

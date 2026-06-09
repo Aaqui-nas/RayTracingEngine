@@ -66,15 +66,16 @@ static void render_rows(Camera camera, int row_start, int row_end, int width, in
 }
 
 int main(int argc, char* argv[]) {
-    double multiplier = argc > 1 ? std::stod(argv[1]) : 1.0;
-    int    samples    = argc > 2 ? std::stoi(argv[2]) : 64;
-    const int width   = (int)(400 * multiplier);
-    const int height  = (int)(225 * multiplier);
+    double      multiplier = argc > 1 ? std::stod(argv[1]) : 1.0;
+    int         samples    = argc > 2 ? std::stoi(argv[2]) : 64;
+    std::string scene_path = argc > 3 ? argv[3] : "scenes/scene_dof.txt";
+    const int width        = (int)(400 * multiplier);
+    const int height       = (int)(225 * multiplier);
     const double aspect_ratio = (double)width / height;
 
     Camera camera;
     std::map<std::string, Material> materials = build_materials();
-    Scene scene = load_scene("scenes/scene_dof.txt", materials, camera, aspect_ratio);
+    Scene scene = load_scene(scene_path, materials, camera, aspect_ratio);
     scene.build_bvh();
 
     std::vector<Pixel> pixels(width * height);

@@ -3,6 +3,7 @@
 #include <string>
 #include <random>
 #include "geometry/shape.h"
+#include "materials/texture.h"
 
 namespace rt {
 
@@ -15,6 +16,8 @@ namespace rt {
         do { p = Vec3d(rng_dist(rng), rng_dist(rng), 0); } while (dot(p, p) >= 1.0);
         return p;
     }
+
+    Material normal_mapped(Material base, TexturePtr normal_map);
 
     std::map<std::string, Material> build_materials();
 

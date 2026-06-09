@@ -23,6 +23,7 @@ namespace rt {
         Material material   = {};
         Vec3d    emission   = {};
         double   u = 0.0, v = 0.0;
+        Vec3d tangent = {};
     };
 
     class Shape {

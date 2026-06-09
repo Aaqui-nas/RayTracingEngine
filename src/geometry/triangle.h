@@ -9,6 +9,7 @@ namespace rt {
         Vec3d A, B, C;
         Vec3d normal;
         Vec3d uv_A, uv_B, uv_C;
+        Vec3d T;
 
         Triangle(Vec3d a, Vec3d b, Vec3d c,
                  Vec3d uv_a, Vec3d uv_b, Vec3d uv_c,
@@ -16,6 +17,13 @@ namespace rt {
             : Shape(mat), A(a), B(b), C(c), uv_A(uv_a), uv_B(uv_b), uv_C(uv_c)
         {
             normal = (B - A).cross(C - A).normalized();
+            Vec3d dPos1 = B - A;
+            Vec3d dUV1 = uv_B - uv_A - (Vec3d(0, 0, 1)*(uv_B.z - uv_A.z));
+            Vec3d dPos2 = C - A;
+            Vec3d dUV2 = uv_C - uv_A - (Vec3d(0, 0, 1)*(uv_C.z - uv_A.z));
+            double det = dUV1.x * dUV2.y - dUV2.x * dUV1.y;
+            T = (dUV2.y * dPos1 - dUV1.y * dPos2) / det;
+            T = (T - dot(T, normal) * normal).normalized();
         }
 
         Triangle(Vec3d a, Vec3d b, Vec3d c, Material mat)
@@ -48,7 +56,8 @@ namespace rt {
                 (det > 0) ? normal : -normal,
                 (det > 0),
                 this->material, this->emission,
-                uv_hit.x, uv_hit.y
+                uv_hit.x, uv_hit.y,
+                T
             };
         }
 
