@@ -50,6 +50,12 @@ namespace rt {
             return *this;
         }
 
+        T operator[](int i) const {
+            if (i == 0) return x;
+            if (i == 1) return y;
+            return z;
+        }
+
 
     };
 

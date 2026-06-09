@@ -24,5 +24,13 @@ namespace rt {
             }
             return result;
         }
+
+        std::optional<AABB> bounding_box() const override {
+            if (triangles.empty()) return std::nullopt;
+            auto box = triangles[0].bounding_box().value();
+            for (size_t i = 1; i < triangles.size(); i++)
+                box = surrounding_box(box, triangles[i].bounding_box().value());
+            return box;
+        }
     };
 }

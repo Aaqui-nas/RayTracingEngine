@@ -37,10 +37,9 @@ Vec3d ray_color(const Ray& ray, const Scene& scene, int depth) {
     Vec3d norm = ray.direction.normalized();
     double y = (norm.y + 1) / 2;
     if (depth == 0) return (1-y)*Vec3d(255,255,255) + y*Vec3d(128,178,255);
-    if (auto hit = scene.hit(ray, 0.001, 1000)) {
-        auto [rec, idx] = *hit;
-        Vec3d emitted = scene.objects[idx]->emission;
-        if (auto scatter = scene.objects[idx]->material(ray, rec))
+    if (auto rec = scene.hit(ray, 0.001, 1000)) {
+        Vec3d emitted = rec->emission;
+        if (auto scatter = rec->material(ray, *rec))
             return emitted + mul(scatter->attenuation / 255.0, ray_color(scatter->scattered, scene, depth - 1));
         return emitted;
     }
@@ -83,6 +82,7 @@ int main(int argc, char* argv[]) {
     std::map<std::string, Material> materials = build_materials();
 
     Scene scene = load_scene("scene.txt", materials);
+    scene.build_bvh();
 
     std::vector<Pixel> pixels(width * height);
     std::atomic<int> lines_done(0);

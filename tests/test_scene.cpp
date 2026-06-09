@@ -33,7 +33,7 @@ TEST_CASE("Scene / une sphère touchée retourne un hit") {
     auto result = scene.hit(r, 0.001, 1000.0);
 
     REQUIRE(result.has_value());
-    REQUIRE(result->first.t == Approx(1.5).epsilon(0.01));
+    REQUIRE(result->t == Approx(1.5).epsilon(0.01));
 }
 
 TEST_CASE("Scene / une sphère manquée retourne nullopt") {
@@ -58,19 +58,7 @@ TEST_CASE("Scene / retourne l'intersection la plus proche") {
     auto result = scene.hit(r, 0.001, 1000.0);
 
     REQUIRE(result.has_value());
-    REQUIRE(result->first.t == Approx(1.5).epsilon(0.01));
-}
-
-TEST_CASE("Scene / l'indice retourné correspond à l'objet touché") {
-    Scene scene;
-    scene.add(std::make_shared<Sphere>(Vec3d(0,0,-5), 0.5, dummy_mat));  // indice 0 (loin)
-    scene.add(std::make_shared<Sphere>(Vec3d(0,0,-2), 0.5, dummy_mat));  // indice 1 (proche)
-
-    Ray r(Vec3d(0,0,0), Vec3d(0,0,-1));
-    auto result = scene.hit(r, 0.001, 1000.0);
-
-    REQUIRE(result.has_value());
-    REQUIRE(result->second == 1);  // la sphère proche est à l'indice 1
+    REQUIRE(result->t == Approx(1.5).epsilon(0.01));
 }
 
 TEST_CASE("Scene / sphère devant masque sphère derrière") {
@@ -82,7 +70,7 @@ TEST_CASE("Scene / sphère devant masque sphère derrière") {
     auto result = scene.hit(r, 0.001, 1000.0);
 
     REQUIRE(result.has_value());
-    REQUIRE(result->first.t < 3.0);  // c'est bien la sphère proche
+    REQUIRE(result->t < 3.0);  // c'est bien la sphère proche
 }
 
 TEST_CASE("Scene / sphère et plan — retourne le plus proche") {
@@ -96,13 +84,13 @@ TEST_CASE("Scene / sphère et plan — retourne le plus proche") {
     Ray r_sphere(Vec3d(0,0,0), Vec3d(0,0,-1));
     auto hit_sphere = scene.hit(r_sphere, 0.001, 1000.0);
     REQUIRE(hit_sphere.has_value());
-    REQUIRE(hit_sphere->first.t == Approx(1.5).epsilon(0.01));
+    REQUIRE(hit_sphere->t == Approx(1.5).epsilon(0.01));
 
     // Rayon vers le bas (vers le plan)
     Ray r_plane(Vec3d(0,5,0), Vec3d(0,-1,0));
     auto hit_plane = scene.hit(r_plane, 0.001, 1000.0);
     REQUIRE(hit_plane.has_value());
-    REQUIRE(hit_plane->first.t == Approx(6.0).epsilon(0.01));
+    REQUIRE(hit_plane->t == Approx(6.0).epsilon(0.01));
 }
 
 // ── add() et gestion des objets ───────────────────────────────────────────────

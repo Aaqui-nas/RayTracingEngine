@@ -21,7 +21,7 @@ namespace rt{
             Vec3d hit_point = ray.origin + t * ray.direction;
             bool front_face = denom < 0;
             Vec3d hit_normal = front_face ? this->normal.normalized() : -(this->normal.normalized());
-            return HitRecord{t, hit_point, hit_normal, front_face};
+            return HitRecord{t, hit_point, hit_normal, front_face, this->material, this->emission};
         }
     };
 }

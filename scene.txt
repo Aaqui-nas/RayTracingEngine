@@ -10,4 +10,6 @@ plane   0.0  0.0 -1    0.0  0.0  1.0    mirror
 # Plan miroir derrière la caméra (z=1.5, normale -z vers la scène)
 plane   0.0  0.0  1    0.0  0.0 -1.0    mirror
 
+mesh bunny.obj gold
+
 sphere 1.75 0.75 0.5 0.5 silver

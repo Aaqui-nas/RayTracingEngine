@@ -1,5 +1,6 @@
 #pragma once
 #include "shape.h"
+#include <algorithm>
 
 namespace rt {
     class Triangle : public Shape {
@@ -36,7 +37,13 @@ namespace rt {
             if (t < tmin || t > tmax) return std::nullopt;
 
             Vec3d point = ray.origin + t * ray.direction;
-            return HitRecord{t, point, (det > 0) ? normal : -normal, (det > 0)};
+            return HitRecord{t, point, (det > 0) ? normal : -normal, (det > 0), this->material, this->emission};
+        }
+
+        std::optional<AABB> bounding_box() const override {
+            Vec3d mn(std::min({A.x, B.x, C.x}), std::min({A.y, B.y, C.y}), std::min({A.z, B.z, C.z}));
+            Vec3d mx(std::max({A.x, B.x, C.x}), std::max({A.y, B.y, C.y}), std::max({A.z, B.z, C.z}));
+            return AABB(mn - Vec3d(1e-4, 1e-4, 1e-4), mx + Vec3d(1e-4, 1e-4, 1e-4));
         }
     };
 }

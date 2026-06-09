@@ -26,7 +26,12 @@ public:
         Vec3d point = ray.origin + t * ray.direction;
         Vec3d outward_normal = (point - center) / radius;
         bool front_face = dot(ray.direction, outward_normal) < 0;
-        return HitRecord{t, point, front_face ? outward_normal : -outward_normal, front_face};
+        return HitRecord{t, point, front_face ? outward_normal : -outward_normal, front_face, this->material, this->emission};
+    }
+
+    std::optional<AABB> bounding_box() const override {
+        Vec3d r(radius, radius, radius);
+        return AABB(center-r, center+r);
     }
 };
 }
