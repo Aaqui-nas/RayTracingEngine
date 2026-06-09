@@ -8,6 +8,7 @@
 #include "scene.h"
 #include "sphere.h"
 #include "plane.h"
+#include "obj_loader.h"
 
 namespace rt {
     Scene load_scene(const std::string& filename, const std::map<std::string, Material>& materials) {
@@ -52,6 +53,10 @@ namespace rt {
                 auto s = std::make_shared<Sphere>(Vec3d(x,y,z), r, get_material("__black__"));
                 s->emission = Vec3d(er, eg, eb);
                 scene.add(std::move(s));
+            } else if (type == "mesh") {
+                std::string path;
+                ss >> path >> material;
+                scene.add(load_obj(path, get_material(material)));
             } else if (!type.empty() && type != "#") {
                 std::cerr << "Type inconnu: " << type << "\n";
             }

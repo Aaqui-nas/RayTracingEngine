@@ -10,8 +10,7 @@ namespace rt{
         Vec3d point;
         Vec3d normal;
 
-        Plane(Vec3d point, Vec3d normal, Material mat) : point(point), normal(normal) {
-            this->material = mat;
+        Plane(Vec3d point, Vec3d normal, Material mat) : Shape(mat), point(point), normal(normal) {
         }
 
         std::optional<HitRecord> hit(const Ray& ray, double tmin, double tmax) const override {

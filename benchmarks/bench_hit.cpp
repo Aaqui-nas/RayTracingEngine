@@ -2,6 +2,8 @@
 #include "scene.h"
 #include "sphere.h"
 #include "plane.h"
+#include "triangle.h"
+#include "mesh.h"
 #include <vector>
 #include <memory>
 
@@ -90,6 +92,54 @@ static void BM_Scene_Miss(benchmark::State& state) {
 }
 BENCHMARK(BM_Scene_Miss)->Range(10, 10000)->RangeMultiplier(10);
 
-// ── Contexte : après TP14, BM_Scene_Hit sera comparé à BM_BVH_Hit ────────────
-// Ce benchmark servira de référence "brute force" pour mesurer le gain du BVH.
+// ── Triangle::hit ─────────────────────────────────────────────────────────────
+
+static void BM_Triangle_Hit(benchmark::State& state) {
+    Triangle tri(Vec3d(0,0,-2), Vec3d(1,0,-2), Vec3d(0,1,-2), null_mat);
+    Ray r(Vec3d(0.2, 0.2, 0), Vec3d(0, 0, -1));
+    for (auto _ : state) {
+        auto hit = tri.hit(r, 0.001, 1000.0);
+        benchmark::DoNotOptimize(hit);
+    }
+}
+BENCHMARK(BM_Triangle_Hit);
+
+static void BM_Triangle_Miss(benchmark::State& state) {
+    Triangle tri(Vec3d(0,0,-2), Vec3d(1,0,-2), Vec3d(0,1,-2), null_mat);
+    Ray r(Vec3d(5, 5, 0), Vec3d(0, 0, -1));  // manque le triangle
+    for (auto _ : state) {
+        auto hit = tri.hit(r, 0.001, 1000.0);
+        benchmark::DoNotOptimize(hit);
+    }
+}
+BENCHMARK(BM_Triangle_Miss);
+
+// ── Mesh::hit avec N triangles (O(n)) ────────────────────────────────────────
+// Servira de référence brute-force à comparer avec le BVH en TP14
+
+static void BM_Mesh_Hit(benchmark::State& state) {
+    const int N = state.range(0);
+    Mesh mesh(null_mat);
+
+    // Triangles en grille — seul le premier est touché par le rayon
+    for (int i = 0; i < N; i++) {
+        double x = (i % 10) * 3.0;
+        double z = -(i / 10) * 3.0 - 2.0;
+        mesh.add(Triangle(
+            Vec3d(x,   0, z), Vec3d(x+1, 0, z), Vec3d(x, 1, z),
+            null_mat
+        ));
+    }
+
+    Ray r(Vec3d(0.2, 0.2, 0), Vec3d(0, 0, -1));
+
+    for (auto _ : state) {
+        auto hit = mesh.hit(r, 0.001, 1000.0);
+        benchmark::DoNotOptimize(hit);
+    }
+    state.SetItemsProcessed(state.iterations() * N);
+}
+BENCHMARK(BM_Mesh_Hit)->Range(10, 10000)->RangeMultiplier(10);
+
+// ── Contexte : après TP14, BM_Mesh_Hit sera comparé à BM_BVH_Hit ─────────────
 // La différence attendue : O(n) → O(log n), soit 100-1000× sur de gros datasets.

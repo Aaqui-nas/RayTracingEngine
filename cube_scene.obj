@@ -1,0 +1,28 @@
+# Cube doré — centré en (1.3, -0.1, -2.0), taille 0.8 — posé sur le sol (y=-0.5)
+v  0.9 -0.5 -2.4
+v  1.7 -0.5 -2.4
+v  1.7  0.3 -2.4
+v  0.9  0.3 -2.4
+v  0.9 -0.5 -1.6
+v  1.7 -0.5 -1.6
+v  1.7  0.3 -1.6
+v  0.9  0.3 -1.6
+
+# Face arrière (z = -2.4)
+f 1 2 3
+f 1 3 4
+# Face avant (z = -1.6)
+f 5 6 7
+f 5 7 8
+# Face gauche (x = 0.9)
+f 1 4 8
+f 1 8 5
+# Face droite (x = 1.7)
+f 2 3 7
+f 2 7 6
+# Face bas (y = -0.5)
+f 1 2 6
+f 1 6 5
+# Face haut (y = 0.3)
+f 4 3 7
+f 4 7 8

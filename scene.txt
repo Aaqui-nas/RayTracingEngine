@@ -1,23 +1,13 @@
+# Sol en damier
 plane   0.0 -0.5  0.0    0.0  1.0  0.0    checker
 
-light  -5.5  7.0 -2.0    2.2   650 540 370
+# Éclairage — légèrement au-dessus et devant
+light   0.0  5.0 -2.0    1.5   480 440 400
 
-sphere  -1.8  0.01 -2.5   0.5  mirror
-sphere   1.8  0.01 -2.5   0.5  mirror
-sphere   0.0  0.01 -2.5   0.5  glass
+# Plan miroir devant la caméra (z=-3.5, normale +z vers caméra)
+plane   0.0  0.0 -1    0.0  0.0  1.0    mirror
 
-sphere  -1.0 -0.12 -1.7   0.38  gold
-sphere   1.0 -0.12 -1.7   0.38  silver
+# Plan miroir derrière la caméra (z=1.5, normale -z vers la scène)
+plane   0.0  0.0  1    0.0  0.0 -1.0    mirror
 
-sphere  -2.0  0.2 -3.5    0.6  glass_blue
-sphere   2.0  0.2 -3.5    0.6  glass_rose
-
-sphere  -2.8  0.31 -4.2   0.8  copper
-sphere   2.8  0.31 -4.2   0.8  fuzzy_metal
-sphere   0.0  0.5  -4.6   0.9  glass_thick
-
-sphere  -0.5 -0.32 -1.4   0.18  red
-sphere   0.5 -0.32 -1.4   0.18  blue
-sphere   0.0 -0.32 -1.7   0.18  green
-
-sphere 0 -0.32 -0.5 0.25 silver
+sphere 1.75 0.75 0.5 0.5 silver

@@ -10,6 +10,8 @@
 #include "scene_loader.h"
 #include "camera.h"
 #include "materials.h"
+#include "triangle.h"
+#include "obj_loader.h"
 
 using namespace rt;
 
@@ -32,7 +34,9 @@ Vec3d gammaVec(Vec3d v, double g) {
 Vec3d mul(Vec3d a, Vec3d b) { return Vec3d(a.x*b.x, a.y*b.y, a.z*b.z); }
 
 Vec3d ray_color(const Ray& ray, const Scene& scene, int depth) {
-    if (depth == 0) return Vec3d(0, 0, 0);
+    Vec3d norm = ray.direction.normalized();
+    double y = (norm.y + 1) / 2;
+    if (depth == 0) return (1-y)*Vec3d(255,255,255) + y*Vec3d(128,178,255);
     if (auto hit = scene.hit(ray, 0.001, 1000)) {
         auto [rec, idx] = *hit;
         Vec3d emitted = scene.objects[idx]->emission;
@@ -40,8 +44,6 @@ Vec3d ray_color(const Ray& ray, const Scene& scene, int depth) {
             return emitted + mul(scatter->attenuation / 255.0, ray_color(scatter->scattered, scene, depth - 1));
         return emitted;
     }
-    Vec3d norm = ray.direction.normalized();
-    double y = (norm.y + 1) / 2;
     return (1-y)*Vec3d(255,255,255) + y*Vec3d(128,178,255);
 }
 

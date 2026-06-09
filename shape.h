@@ -23,6 +23,7 @@ namespace rt {
     public:
         Material material;
         Vec3d emission = Vec3d(0, 0, 0);
+        Shape(Material mat) : material(mat) {};
         virtual std::optional<HitRecord> hit(const Ray& ray, double tmin, double tmax) const = 0;
         virtual ~Shape() {}
     };
