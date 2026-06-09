@@ -1,6 +1,7 @@
 #include <benchmark/benchmark.h>
 #include "vec3.h"
 
+using namespace rt;
 // ── Addition ──────────────────────────────────────────────────────────────────
 static void BM_Vec3_Add(benchmark::State& state) {
     Vec3d a(1.0, 2.0, 3.0), b(4.0, 5.0, 6.0);

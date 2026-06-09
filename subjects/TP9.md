@@ -86,8 +86,8 @@ Pourquoi utilise-t-on `std::cerr` pour les erreurs plutôt que `std::cout` ? Rap
 ---
 
 ## Critères de réussite
-- [ ] `load_scene()` parse correctement le fichier
-- [ ] Les lignes vides et commentaires sont ignorés
-- [ ] Les types inconnus affichent un warning sur `cerr`
-- [ ] `main.cpp` n'a plus d'objets codés en dur
-- [ ] Le programme gère proprement le fichier manquant
+- [x] `load_scene()` parse correctement le fichier
+- [x] Les lignes vides et commentaires sont ignorés
+- [x] Les types inconnus affichent un warning sur `cerr`
+- [x] `main.cpp` n'a plus d'objets codés en dur
+- [x] Le programme gère proprement le fichier manquant

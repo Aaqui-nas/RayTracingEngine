@@ -78,8 +78,8 @@ Pourquoi stocker tous les pixels avant d'écrire plutôt qu'écrire directement 
 ---
 
 ## Critères de réussite
-- [ ] Range-based for utilisé dans `Scene::hit()`
-- [ ] Les pixels sont stockés dans un `vector<Pixel>`
-- [ ] La gamma correction est appliquée
-- [ ] `clamp` est utilisée
-- [ ] `std::sort` est utilisé au moins une fois
+- [x] Range-based for utilisé dans `Scene::hit()`
+- [x] Les pixels sont stockés dans un `vector<Pixel>`
+- [x] La gamma correction est appliquée
+- [x] `clamp` est utilisée
+- [x] `std::sort` est utilisé au moins une fois

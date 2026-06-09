@@ -3,6 +3,7 @@
 #include "sphere.h"
 #include "plane.h"
 
+using namespace rt;
 using Catch::Approx;
 
 // Matériau neutre pour les tests — les tests de shapes ne portent pas sur les matériaux

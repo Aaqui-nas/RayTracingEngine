@@ -393,11 +393,11 @@ Recompile. L'image produite doit être identique à celle de TP12.
 
 ## Critères de réussite
 
-- [ ] `CMakeLists.txt` compile sans erreur avec `cmake .. && make`
-- [ ] Tous les headers sont entourés de `namespace rt { }`
-- [ ] `main.cpp` utilise `using namespace rt;` et compile
-- [ ] `Camera::get_ray()` est implémentée et remplace les globales
-- [ ] `materials.h` contient uniquement des déclarations (pas de définitions)
-- [ ] `materials.cpp` contient toutes les implémentations des factories
-- [ ] `build_materials()` retourne la map complète
-- [ ] Le programme produit une image PPM identique à celle de TP12
+- [x] `CMakeLists.txt` compile sans erreur avec `cmake .. && make`
+- [x] Tous les headers sont entourés de `namespace rt { }`
+- [x] `main.cpp` utilise `using namespace rt;` et compile
+- [x] `Camera::get_ray()` est implémentée et remplace les globales
+- [x] `materials.h` contient uniquement des déclarations (pas de définitions)
+- [x] `materials.cpp` contient toutes les implémentations des factories
+- [x] `build_materials()` retourne la map complète
+- [x] Le programme produit une image PPM identique à celle de TP12

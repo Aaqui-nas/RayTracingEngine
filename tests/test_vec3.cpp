@@ -2,6 +2,7 @@
 #include <catch2/catch_approx.hpp>
 #include "vec3.h"
 
+using namespace rt;
 using Catch::Approx;
 
 // ── Construction ──────────────────────────────────────────────────────────────

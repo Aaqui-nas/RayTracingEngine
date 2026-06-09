@@ -5,6 +5,7 @@
 #include <vector>
 #include <memory>
 
+using namespace rt;
 // Matériau vide — on benchmark l'intersection, pas l'évaluation du matériau
 static Material null_mat = [](const Ray&, const HitRecord&) -> std::optional<Scatter> {
     return std::nullopt;

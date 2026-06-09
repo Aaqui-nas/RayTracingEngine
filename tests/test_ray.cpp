@@ -2,6 +2,7 @@
 #include <catch2/catch_approx.hpp>
 #include "ray.h"
 
+using namespace rt;
 using Catch::Approx;
 
 TEST_CASE("Ray / construction") {

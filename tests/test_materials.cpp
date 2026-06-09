@@ -6,6 +6,7 @@
 #include <cmath>
 #include <random>
 
+using namespace rt;
 using Catch::Approx;
 
 // ─────────────────────────────────────────────────────────────────────────────

@@ -4,6 +4,7 @@
 #include "sphere.h"
 #include "plane.h"
 
+using namespace rt;
 using Catch::Approx;
 
 // Note : Scene a un constructeur de déplacement qui affiche sur stdout (TP11 pédagogique).

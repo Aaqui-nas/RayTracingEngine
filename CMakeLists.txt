@@ -7,7 +7,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 find_package(Threads REQUIRED)
 
 # ── Exécutable principal ──────────────────────────────────────────────────────
-add_executable(raytracer main.cpp)
+add_executable(raytracer main.cpp materials.cpp)
 target_link_libraries(raytracer PRIVATE Threads::Threads)
 target_compile_options(raytracer PRIVATE -O2 -Wall -Wextra)
 
