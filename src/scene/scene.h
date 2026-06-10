@@ -4,9 +4,11 @@
 #include <optional>
 #include "geometry/shape.h"
 #include "geometry/bvh.h"
+#include "geometry/sphere.h"
 #include "materials/env_map.h"
 #include "lights/lights.h"
 #include "geometry/concepts.h"
+#include "core/sphere_accel.h"
 
 namespace rt {
 
@@ -15,7 +17,8 @@ namespace rt {
         std::vector<std::shared_ptr<Shape>> objects;
         std::shared_ptr<BVHNode>  bvh_root;
         std::shared_ptr<EnvMap>   env_map;
-        LightList lights;
+        LightList   lights;
+        SphereAccel sphere_accel;
 
         Scene() = default;
 
@@ -35,7 +38,10 @@ namespace rt {
         }
 
         void add(std::shared_ptr<Shape> shape) {
-            objects.push_back(std::move(shape));
+            if (auto sphere = std::dynamic_pointer_cast<Sphere>(shape))
+                sphere_accel.add(sphere);
+            else
+                objects.push_back(std::move(shape));
         }
 
         void build_bvh() {
@@ -54,6 +60,13 @@ namespace rt {
         std::optional<HitRecord> hit(const Ray& ray, double tmin, double tmax) const {
             std::optional<HitRecord> best;
             double closest = tmax;
+
+            if (!sphere_accel.empty()) {
+                if (auto h = sphere_accel.hit(ray, tmin, closest)) {
+                    closest = h->t;
+                    best    = h;
+                }
+            }
 
             for (auto& obj : objects) {
                 if (auto h = obj->hit(ray, tmin, closest)) {

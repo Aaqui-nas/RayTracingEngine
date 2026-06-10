@@ -26,7 +26,7 @@ add_executable(run_tests
 target_include_directories(run_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
 target_link_libraries(run_tests PRIVATE Catch2::Catch2WithMain)
 target_compile_features(run_tests PRIVATE cxx_std_20)
-target_compile_options(run_tests PRIVATE -Wall -Wextra)
+target_compile_options(run_tests PRIVATE -Wall -Wextra -mavx2 -mfma)
 
 include(CTest)
 include(Catch)

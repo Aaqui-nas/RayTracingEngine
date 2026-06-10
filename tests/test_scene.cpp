@@ -97,22 +97,20 @@ TEST_CASE("Scene / sphère et plan — retourne le plus proche") {
 
 TEST_CASE("Scene / add() augmente le nombre d'objets") {
     Scene scene;
-    REQUIRE(scene.objects.empty());
+    REQUIRE(scene.sphere_accel.empty());
 
     scene.add(std::make_shared<Sphere>(Vec3d(0,0,-1), 0.3, dummy_mat));
-    REQUIRE(scene.objects.size() == 1);
+    REQUIRE(scene.sphere_accel.size() == 1);
 
     scene.add(std::make_shared<Sphere>(Vec3d(0,0,-3), 0.3, dummy_mat));
-    REQUIRE(scene.objects.size() == 2);
+    REQUIRE(scene.sphere_accel.size() == 2);
 }
 
 TEST_CASE("Scene / objets accessibles via objects[]") {
     Scene scene;
-    auto sphere = std::make_shared<Sphere>(Vec3d(1,2,3), 0.5, dummy_mat);
     scene.add(std::make_shared<Sphere>(Vec3d(1,2,3), 0.5, dummy_mat));
 
-    REQUIRE(scene.objects.size() == 1);
-    auto* s = dynamic_cast<Sphere*>(scene.objects[0].get());
-    REQUIRE(s != nullptr);
-    REQUIRE(s->radius == 0.5);
+    // Les sphères vont dans sphere_accel (chemin SIMD), pas dans objects
+    REQUIRE(scene.objects.empty());
+    REQUIRE(scene.sphere_accel.size() == 1);
 }
