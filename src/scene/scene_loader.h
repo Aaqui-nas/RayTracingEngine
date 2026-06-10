@@ -9,6 +9,7 @@
 #include "geometry/plane.h"
 #include "scene/obj_loader.h"
 #include "camera/camera.h"
+#include "materials/env_map.h"
 
 namespace rt {
 
@@ -49,12 +50,6 @@ namespace rt {
                 std::string mat;
                 ss >> x1 >> y1 >> z1 >> x2 >> y2 >> z2 >> mat;
                 scene.add(std::make_shared<Plane>(Vec3d(x1,y1,z1), Vec3d(x2,y2,z2), get_material(mat)));
-            } else if (type == "light") {
-                double x, y, z, r, er, eg, eb;
-                ss >> x >> y >> z >> r >> er >> eg >> eb;
-                auto s = std::make_shared<Sphere>(Vec3d(x,y,z), r, get_material("__black__"));
-                s->emission = Vec3d(er, eg, eb);
-                scene.add(std::move(s));
             } else if (type == "mesh") {
                 std::string path, mat;
                 ss >> path >> mat;
@@ -64,6 +59,21 @@ namespace rt {
                 ss >> x1 >> y1 >> z1 >> x2 >> y2 >> z2 >> x3 >> y3 >> z3 >> fov >> aperture >> focus;
                 camera = Camera(Vec3d(x1,y1,z1), Vec3d(x2,y2,z2), Vec3d(x3,y3,z3),
                                 fov, aspect_ratio, aperture, focus);
+            } else if (type == "envmap") {
+                std::string path;
+                ss >> path;
+                try {
+                    scene.env_map = std::make_shared<EnvMap>(EnvMap::load_hdr(path));
+                } catch (const std::exception& e) {
+                    std::cerr << "Erreur envmap: " << e.what() << "\n";
+                }
+            } else if (type == "light") {
+                double x, y, z, r, er, eg, eb;
+                ss >> x >> y >> z >> r >> er >> eg >> eb;
+                auto s = std::make_shared<Sphere>(Vec3d(x,y,z), r, get_material("__black__"));
+                s->emission = Vec3d(er, eg, eb);
+                scene.add(std::move(s));
+                scene.lights.add(make_sphere_light(Vec3d(x,y,z), r, Vec3d(er,eg,eb)));
             } else if (!type.empty() && type != "#") {
                 std::cerr << "Type inconnu: " << type << "\n";
             }

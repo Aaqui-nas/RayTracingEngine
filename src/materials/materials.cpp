@@ -133,7 +133,6 @@ namespace rt {
         };
         materials["default"]     = lambertian(std::make_shared<SolidColor>(Vec3d(200, 200, 200)));
 
-        // ── Textures UV (sphères) ──────────────────────────────────────────────
         materials["checker_uv"]  = lambertian(std::make_shared<CheckerTexture>(
             Vec3d(245, 245, 245), Vec3d(20, 20, 20), 10.0));
         materials["checker_orange"] = lambertian(std::make_shared<CheckerTexture>(
@@ -141,7 +140,6 @@ namespace rt {
         materials["checker_blue_uv"] = lambertian(std::make_shared<CheckerTexture>(
             Vec3d(30, 90, 220), Vec3d(220, 240, 255), 8.0));
 
-        // ── Textures Perlin ────────────────────────────────────────────────────
         materials["perlin_marble"] = lambertian(std::make_shared<PerlinTexture>(
             Vec3d(220, 215, 200), 5.0));
         materials["perlin_lava"]   = lambertian(std::make_shared<PerlinTexture>(
@@ -159,7 +157,7 @@ namespace rt {
         );
         materials["bump_gold"] = normal_mapped(
             metal(Vec3d(255, 190, 40), 0.05),
-            std::make_shared<BumpTexture>(2.0, 1)
+            std::make_shared<BumpTexture>(1.0, 1)
         );
         return materials;
     }

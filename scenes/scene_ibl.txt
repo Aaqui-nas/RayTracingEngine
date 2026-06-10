@@ -1,0 +1,29 @@
+# TP18 — IBL : Environment map
+#
+# Télécharge un .hdr sur https://polyhaven.com/hdris (format HDRI, résolution 1k)
+# et place-le dans le dossier hdri/ (crée-le à la racine du projet), par exemple :
+#   hdri/venice_sunset_1k.hdr
+#
+# Ensuite dé-commente la ligne envmap ci-dessous.
+# Si aucun fichier HDR n'est fourni, le renderer utilise le dégradé de ciel par défaut.
+#
+# Compilation et rendu :
+#   cmake --build build --parallel
+#   ./build/raytracer 1.0 128 scenes/scene_ibl.txt > outputs/ibl.ppm
+
+envmap  hdri/qwantani_moon_noon_puresky_4k.hdr
+
+camera  0 1.2 5   0 0.8 0   0 1 0   50   0.05  5.0
+
+# Sol réfléchissant pour voir le reflet de l'env map
+plane   0.0 0.0 0.0   0.0 1.0 0.0   checker
+
+# Sphères métalliques — parfaites pour observer les reflets d'environnement
+sphere   0.0  0.7  0.0   0.7   mirror
+sphere  -2.0  0.5 -1.0   0.5   silver
+sphere   2.0  0.5 -1.0   0.5   copper
+sphere  -1.2  0.4  1.5   0.4   glass
+sphere   1.2  0.4  1.5   0.4   bump_gold
+
+# Sphère diffuse — montre la contribution de l'IBL sur les surfaces mates
+sphere   0.0  0.4 -2.5   0.4   white

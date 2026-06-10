@@ -5,9 +5,9 @@
 #include <mutex>
 #include <map>
 #include <cmath>
-#include "scene/scene_loader.h"
 #include "camera/camera.h"
 #include "materials/materials.h"
+#include "scene/scene_loader.h"
 
 using namespace rt;
 
@@ -25,20 +25,44 @@ static Vec3d gamma(Vec3d v, double g) {
 }
 
 static Vec3d ray_color(const Ray& ray, const Scene& scene, int depth) {
-    Vec3d norm = ray.direction.normalized();
-    double y   = (norm.y + 1) / 2;
-    Vec3d sky  = (1-y) * Vec3d(255,255,255) + y * Vec3d(128,178,255);
+    auto sky = [&]() -> Vec3d {
+        if (scene.env_map) {
+            Vec3d c = scene.env_map->background(ray.direction.normalized());
+            c = c * 2.0;
+            return Vec3d(c.x / (1 + c.x), c.y / (1 + c.y), c.z / (1 + c.z)) * 255.0;
+        }
+        Vec3d norm = ray.direction.normalized();
+        double y = (norm.y + 1) / 2;
+        return (1-y) * Vec3d(255,255,255) + y * Vec3d(128,178,255);
+    };
 
-    if (depth == 0) return sky;
+    if (depth == 0) return sky();
 
     if (auto rec = scene.hit(ray, 0.001, 1000)) {
-        Vec3d emitted = rec->emission;
-        if (auto scatter = rec->material(ray, *rec))
-            return emitted + mul(scatter->attenuation / 255.0,
-                                 ray_color(scatter->scattered, scene, depth - 1));
-        return emitted;
+        Vec3d emitted = rec-> emission;
+        auto scatter = rec->material(ray, *rec);
+        Vec3d direct(0, 0, 0);
+        if (!scene.lights.empty() && scatter) {
+            auto ls = scene.lights.sample(rec->point, rng_dist01(rng), rng_dist01(rng), rng_dist01(rng));
+            if (ls && ls->pdf > 0) {
+                Vec3d shadow_origin = rec->point + 1e-4 * rec->normal;
+                Vec3d light_point   = rec->point + ls->direction * ls->distance;
+                if (!scene.occluded(shadow_origin, light_point)) {
+                    double cos_theta = std::max(0.0, dot(ls->direction.normalized(), rec->normal));
+                    double pdf_brdf = cos_theta / pi;
+                    direct = mul(scatter->attenuation,ls->radiance) *cos_theta/(ls->pdf*pi);
+                    direct *= mis_weight(ls->pdf, pdf_brdf);
+                }
+            }
+        }
+
+        if (scatter)
+            return direct + emitted
+                   + mul(scatter->attenuation / 255.0,
+                         ray_color(scatter->scattered, scene, depth - 1));
+        return direct + emitted;
     }
-    return sky;
+    return sky();
 }
 
 static void render_rows(Camera camera, int row_start, int row_end, int width, int height,

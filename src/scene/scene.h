@@ -3,24 +3,32 @@
 #include <memory>
 #include "geometry/shape.h"
 #include "geometry/bvh.h"
+#include "materials/env_map.h"
+#include "lights/lights.h"
 
 namespace rt {
 
     class Scene {
     public:
         std::vector<std::shared_ptr<Shape>> objects;
-        std::shared_ptr<BVHNode> bvh_root;
+        std::shared_ptr<BVHNode>  bvh_root;
+        std::shared_ptr<EnvMap>   env_map;
+        LightList lights;
 
         Scene() = default;
 
         Scene(Scene&& other) noexcept
             : objects(std::move(other.objects))
             , bvh_root(std::move(other.bvh_root))
+            , env_map(std::move(other.env_map))
+            , lights(std::move(other.lights))
         {}
 
         Scene& operator=(Scene&& other) noexcept {
             objects  = std::move(other.objects);
             bvh_root = std::move(other.bvh_root);
+            env_map  = std::move(other.env_map);
+            lights = std::move(other.lights);
             return *this;
         }
 
@@ -62,6 +70,10 @@ namespace rt {
 
             return best;
         }
-    };
 
+        bool occluded(const Vec3d& from, const Vec3d& to) const {
+            Ray ray = Ray(from, (to-from).normalized());
+            return hit(ray, 1e-4, (to-from).length()-1e-3).has_value();
+        }
+    };
 }

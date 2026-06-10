@@ -16,6 +16,8 @@ add_executable(run_tests
     test_camera.cpp
     test_textures.cpp
     test_normals.cpp
+    test_ibl.cpp
+    test_direct_lighting.cpp
     ${CMAKE_SOURCE_DIR}/src/materials/materials.cpp
 )
 target_include_directories(run_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)

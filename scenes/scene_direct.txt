@@ -1,0 +1,33 @@
+# TP19 — Éclairage direct (NEE)
+#
+# Cette scène teste le shadow ray et le Next Event Estimation :
+#   - Deux lumières d'aire sphériques de couleurs différentes
+#   - Sphères diffuses pour observer les ombres douces et la contribution de chaque lumière
+#   - Sol réfléchissant pour observer les reflets de lumière
+#
+# Compare le bruit avec et sans NEE :
+#   ./build/raytracer 1.0 32 scenes/scene_direct.txt > outputs/nee_32.ppm
+#
+# Avec NEE, 32 samples ≈ 256 samples sans NEE pour les surfaces diffuses.
+
+camera  0 2.0 7   0 1.0 0   0 1 0   50   0.0  7.0
+
+# Sol
+plane   0.0 0.0 0.0   0.0 1.0 0.0   checker
+
+# Lumière chaude (jaune-orangée) — haut gauche
+light  -3.0  5.0  -1.0   0.6   80 50 15
+
+# Lumière froide (bleu-blanc) — haut droite
+light   3.0  4.5  -1.0   0.5   15 30 70
+
+# Sphère centrale blanche (diffuse) — reçoit les deux lumières → ombre douce centrale
+# Sphères colorées — pour voir la contribution chromatique de chaque lumière
+sphere  -1.8  0.4  1.0   0.4   red
+sphere   1.8  0.4  1.0   0.4   blue
+
+# Sphère miroir — pour voir les reflets des lumières d'aire
+sphere   0.0  0.5 -1.0   0.5   mirror
+
+# Sphère verre — caustiques (visibles surtout avec MIS, extension TP19)
+sphere  -1.0  0.4  2.0   0.4   glass
