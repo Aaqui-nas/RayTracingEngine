@@ -1,0 +1,43 @@
+# TP23 — Scène finale
+#
+# Toutes les features actives :
+#   - Caméra libre (lookAt, FOV 50°)
+#   - Environment map HDR (IBL)
+#   - Deux lumières d'aire (éclairage direct + MIS)
+#   - Tore procédural PBR or
+#   - Sphères métalliques et diélectriques PBR
+#   - Sol checker
+#   - Sphere mesh procédurale (verre)
+#
+# Rendu rapide (32 spp) :
+#   ./build/raytracer 1.0 32  scenes/scene_final.txt > outputs/final_32.ppm
+# Rendu qualité (256 spp) :
+#   ./build/raytracer 1.0 256 scenes/scene_final.txt > outputs/final_256.ppm
+
+camera  0 5 14   0 2 -1   0 1 0   50   0.0   14.0
+
+# Environment map
+envmap  hdri/qwantani_moon_noon_puresky_4k.hdr
+
+# Lumières d'aire
+light  -5  9  3   0.9   55 50 42
+light   5  8  3   0.9   38 44 68
+
+# Sol checker
+plane  0 0 0   0 1 0   checker
+
+# ─── Pièce centrale : tore or PBR ────────────────────────────────────────────
+torus  0 2.0 -1   1.8 0.55   48 24   gold_pbr
+
+# ─── Sphères métalliques (gauche) ────────────────────────────────────────────
+sphere  -4.0  1.0   1.0   0.9   silver_pbr
+sphere  -2.5  1.0  -1.0   0.9   copper_pbr
+sphere  -5.5  1.0  -1.5   0.8   bump_gold
+
+# ─── Sphères diélectriques (droite) ─────────────────────────────────────────
+sphere   4.0  1.0   1.0   0.9   gloss_plastic
+sphere   2.5  1.0  -1.0   0.9   ceramic
+sphere   5.5  1.0  -1.5   0.8   glass_blue
+
+# ─── Sphere mesh procédurale (verre, devant le tore) ────────────────────────
+sphere_mesh  0 1.0 2.5   0.9   20 20   glass

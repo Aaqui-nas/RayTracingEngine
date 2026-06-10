@@ -13,7 +13,8 @@ namespace rt {
         Vec3() : x(0), y(0), z(0) {}
         Vec3(T x, T y, T z) : x(x), y(y), z(z) {}
 
-        double length() const { return std::sqrt(x*x + y*y + z*z); }
+        T length_squared() const { return x*x + y*y + z*z; }
+        double length() const { return std::sqrt(length_squared()); }
         Vec3 normalized() const { return *this / length(); }
 
         Vec3 operator*(double b) const { return Vec3(x*b, y*b, z*b); }
@@ -49,6 +50,9 @@ namespace rt {
 
     template<typename T>
     inline Vec3<T> operator*(double b, const Vec3<T>& v) { return v * b; }
+
+    template<typename T>
+    inline bool operator==(const Vec3<T>& a, const Vec3<T>& b) { return a.x==b.x && a.y==b.y && a.z==b.z;}
 
     template<typename T>
     inline Vec3<T> mul(const Vec3<T>& a, const Vec3<T>& b) {

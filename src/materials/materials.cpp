@@ -1,23 +1,9 @@
 #include "materials/materials.h"
 #include "materials/texture.h"
 #include "core/mat3.h"
+#include "materials/brdf.h"
 
 namespace rt {
-
-    static Vec3d random_in_unit_sphere() {
-        Vec3d p;
-        do { p = Vec3d(rng_dist(rng), rng_dist(rng), rng_dist(rng)); } while (dot(p, p) >= 1.0);
-        return p;
-    }
-
-    static Vec3d random_unit_vector() {
-        Vec3d v = random_in_unit_sphere();
-        return v / std::sqrt(dot(v, v));
-    }
-
-    static Vec3d reflect(Vec3d v, Vec3d n) {
-        return v - 2 * dot(v, n) * n;
-    }
 
     static Vec3d refract(Vec3d uv, Vec3d n, double ri) {
         double cos_theta = std::min(dot(-uv, n), 1.0);
@@ -159,6 +145,24 @@ namespace rt {
             metal(Vec3d(255, 190, 40), 0.05),
             std::make_shared<BumpTexture>(1.0, 1)
         );
+
+        materials["gold_pbr"]   = cook_torrance(Vec3d(255, 190, 40),  0.20, 1.0);
+        materials["silver_pbr"] = cook_torrance(Vec3d(200, 200, 210), 0.10, 1.0);
+        materials["copper_pbr"] = cook_torrance(Vec3d(220, 120, 60),  0.35, 1.0);
+        materials["rough_metal"]= cook_torrance(Vec3d(190, 190, 200), 0.80, 1.0);
+
+        // Diélectriques PBR (ior=1.5 = plastique)
+        materials["gloss_plastic"]= cook_torrance(Vec3d(200, 50, 50),   0.05, 0.0, 1.5);
+        materials["rough_plastic"]= cook_torrance(Vec3d(50, 100, 200),  0.70, 0.0, 1.5);
+        materials["ceramic"]      = cook_torrance(Vec3d(240, 235, 220), 0.30, 0.0, 1.45);
+
+        for (int ri = 0; ri <= 5; ri++) {
+            double roughness = ri == 0 ? 0.02 : ri * 0.2;
+            materials["gold_r"  + std::to_string(ri)] =
+                cook_torrance(Vec3d(255, 190, 40),  roughness, 1.0);
+            materials["plast_r" + std::to_string(ri)] =
+                cook_torrance(Vec3d(220, 220, 230), roughness, 0.0, 1.5);
+        }
         return materials;
     }
 

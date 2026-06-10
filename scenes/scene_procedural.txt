@@ -1,0 +1,18 @@
+# TP22 — Géométrie procédurale
+# Tore métallique au-dessus d'un terrain bruité
+
+camera  20 10 20   7.5 2.0 7.5   0 1 0   45   0.0   15.0
+
+# Lumière principale — haut milieu
+light   7.5  20.0  7.5   1.0   80 70 60
+
+# Lumière d'ambiance latérale
+light  -5.0  8.0  15.0   0.4   20 30 60
+
+# Terrain 16x16 avec bruit de Perlin
+# terrain N M cell_size height_scale noise_scale noise_amplitude mat
+terrain  16 16  1.0  2.0  0.15  1.2  perlin_moss
+
+# Tore centré au-dessus du terrain (centre du terrain = 7.5, 7.5)
+# torus x y z R r nu nv mat
+torus  7.5  3.5  7.5  1.5  0.5  32  16  gold_pbr

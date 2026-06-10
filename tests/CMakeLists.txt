@@ -18,11 +18,14 @@ add_executable(run_tests
     test_normals.cpp
     test_ibl.cpp
     test_direct_lighting.cpp
+    test_pbr.cpp
+    test_concepts.cpp
+    test_procedural.cpp
     ${CMAKE_SOURCE_DIR}/src/materials/materials.cpp
 )
 target_include_directories(run_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)
 target_link_libraries(run_tests PRIVATE Catch2::Catch2WithMain)
-target_compile_features(run_tests PRIVATE cxx_std_17)
+target_compile_features(run_tests PRIVATE cxx_std_20)
 target_compile_options(run_tests PRIVATE -Wall -Wextra)
 
 include(CTest)

@@ -1,10 +1,12 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include <optional>
 #include "geometry/shape.h"
 #include "geometry/bvh.h"
 #include "materials/env_map.h"
 #include "lights/lights.h"
+#include "geometry/concepts.h"
 
 namespace rt {
 
@@ -37,15 +39,12 @@ namespace rt {
         }
 
         void build_bvh() {
-            std::vector<std::shared_ptr<Shape>> bounded;
-            std::vector<std::shared_ptr<Shape>> unbounded;
+            std::vector<std::shared_ptr<Shape>> bounded, unbounded;
 
-            for (auto& obj : objects) {
-                if (obj->bounding_box().has_value())
-                    bounded.push_back(obj);
-                else
-                    unbounded.push_back(obj);
-            }
+            std::ranges::partition_copy(objects,
+                std::back_inserter(bounded),
+                std::back_inserter(unbounded),
+                [](const auto& obj) { return obj->bounding_box().has_value(); });
 
             objects = unbounded;
             if (!bounded.empty())
@@ -75,5 +74,6 @@ namespace rt {
             Ray ray = Ray(from, (to-from).normalized());
             return hit(ray, 1e-4, (to-from).length()-1e-3).has_value();
         }
+
     };
 }

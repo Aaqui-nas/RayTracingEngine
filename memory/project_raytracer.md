@@ -57,6 +57,31 @@ scene.h, scene_loader.h, scene.txt
 | TP12bis | CMake, namespaces, .h/.cpp | Classe Camera, build_materials() |
 | TP13 | Möller-Trumbore, parsing OBJ | Triangle, Mesh, import OBJ |
 | TP14 | AABB, BVH, operator[] | Accélération O(log n) |
+| TP15 | Constructeur paramétrique | Camera lookAt, FOV, depth of field |
+| TP16 | vector<uint8_t>, structs imbriquées | Textures image, Perlin noise, UV mapping |
+| TP17 | Matrice TBN, espace tangent | Normal mapping sur meshes |
+| TP18 | Loader HDR (RGBE), importance sampling | IBL — env map HDR comme source de lumière |
+| TP19 | Lambdas complexes, MIS | Éclairage direct, shadow rays, lumières d'aire |
+| TP20 | Closures multi-paramètres, namespace physics | BRDF Cook-Torrance (D, F, G), PBR metalness/roughness |
+| TP21 | concept, requires, std::ranges | Hittable, Bounded, closest_hit, views::filter |
+| TP22 | std::generate, std::generate_n | Tore, terrain, sphere mesh procéduraux |
+| TP23 | (consolidation) | Scène finale intégrant tous les systèmes |
 
 ## Roadmap complète
 Voir `memory/roadmap_complet.md` pour les TP15 → TP50 détaillés.
+
+## Structure du code (post-TP23)
+```
+src/
+  core/         vec3.h, ray.h, mat3.h
+  geometry/     shape.h, sphere.h, plane.h, triangle.h, mesh.h,
+                bvh.h, aabb.h, concepts.h, procedural.h
+  materials/    materials.h/.cpp, brdf.h, texture.h, env_map.h, perlin.h
+  scene/        scene.h, scene_loader.h, obj_loader.h
+  camera/       camera.h
+  lights/       lights.h
+tests/          test_*.cpp (Catch2) — y compris test_integrator.cpp (TP23)
+benchmarks/     bench_*.cpp (Google Benchmark)
+scenes/         scene_cornell.txt, scene_gallery.txt, scene_landscape.txt,
+                scene_final.txt, scene_pbr.txt, scene_procedural.txt, ...
+```

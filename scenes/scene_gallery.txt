@@ -1,0 +1,41 @@
+# TP23 — Galerie de matériaux PBR
+#
+# Deux rangées de sphères, roughness croissant de gauche à droite :
+#   Rangée arrière (z=0) : or PBR — métal pur (metalness=1)
+#   Rangée avant  (z=3) : plastique blanc — diélectrique (metalness=0)
+#
+# Colonnes (gauche → droite) :
+#   gold_r0 / plast_r0 : roughness ≈ 0.02  (quasi-miroir)
+#   gold_r1 / plast_r1 : roughness = 0.20  (brillant)
+#   gold_r2 / plast_r2 : roughness = 0.40  (semi-brillant)
+#   gold_r3 / plast_r3 : roughness = 0.60  (légèrement mat)
+#   gold_r4 / plast_r4 : roughness = 0.80  (très mat)
+#   gold_r5 / plast_r5 : roughness = 1.00  (Lambertien pur)
+#
+# Rendu :
+#   ./build/raytracer 1.0 128 scenes/scene_gallery.txt > outputs/gallery.ppm
+
+camera  0 2.5 12   0 1.5 1.5   0 1 0   45   0.0   12.0
+
+# Sol
+plane  0 0 0   0 1 0   checker
+
+# Lumières
+light  -5  8  5   0.9   55 50 45
+light   5  7  5   0.9   40 45 65
+
+# ─── Rangée métaux (or PBR) — z=0 ───────────────────────────────────────────
+sphere  -6.25  1.0  0.0   0.9   gold_r0
+sphere  -3.75  1.0  0.0   0.9   gold_r1
+sphere  -1.25  1.0  0.0   0.9   gold_r2
+sphere   1.25  1.0  0.0   0.9   gold_r3
+sphere   3.75  1.0  0.0   0.9   gold_r4
+sphere   6.25  1.0  0.0   0.9   gold_r5
+
+# ─── Rangée diélectriques (plastique blanc) — z=3 ───────────────────────────
+sphere  -6.25  1.0  3.0   0.9   plast_r0
+sphere  -3.75  1.0  3.0   0.9   plast_r1
+sphere  -1.25  1.0  3.0   0.9   plast_r2
+sphere   1.25  1.0  3.0   0.9   plast_r3
+sphere   3.75  1.0  3.0   0.9   plast_r4
+sphere   6.25  1.0  3.0   0.9   plast_r5

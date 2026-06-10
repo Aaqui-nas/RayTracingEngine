@@ -10,6 +10,7 @@
 #include "scene/obj_loader.h"
 #include "camera/camera.h"
 #include "materials/env_map.h"
+#include "geometry/procedural.h"
 
 namespace rt {
 
@@ -74,7 +75,54 @@ namespace rt {
                 s->emission = Vec3d(er, eg, eb);
                 scene.add(std::move(s));
                 scene.lights.add(make_sphere_light(Vec3d(x,y,z), r, Vec3d(er,eg,eb)));
-            } else if (!type.empty() && type != "#") {
+            } else if (type == "torus") {
+                double x, y, z, R, r;
+                int nu, nv;
+                std::string mat;
+
+                ss >> x >> y >> z >> R >> r >> nu >> nv >> mat;
+
+                auto mesh = generate_torus(R, r, nu, nv, get_material(mat));
+                mesh.translate(Vec3d(x, y, z));
+                scene.add(std::make_shared<Mesh>(std::move(mesh)));
+
+            } else if (type == "sphere_mesh") {
+                double x, y, z, radius;
+                int nu, nv;
+                std::string mat;
+
+                ss >> x >> y >> z >> radius >> nu >> nv >> mat;
+
+                auto mesh = generate_sphere_mesh(radius, nu, nv, get_material(mat));
+                mesh.translate(Vec3d(x, y, z));
+                scene.add(std::make_shared<Mesh>(std::move(mesh)));
+
+            } else if (type == "terrain") {
+                int N, M;
+                double cell_size, height_scale, noise_scale, noise_amplitude;
+                std::string mat;
+
+                ss >> N >> M
+                >> cell_size
+                >> height_scale
+                >> noise_scale
+                >> noise_amplitude
+                >> mat;
+
+                std::vector<std::vector<double>> heights(
+                    N, std::vector<double>(M, 0.0));
+
+                apply_noise(heights, noise_scale, noise_amplitude);
+
+                auto mesh = generate_terrain(
+                    heights,
+                    cell_size,
+                    height_scale,
+                    get_material(mat));
+
+                scene.add(std::make_shared<Mesh>(std::move(mesh)));
+            }
+            else if  (!type.empty() && type != "#") {
                 std::cerr << "Type inconnu: " << type << "\n";
             }
         }

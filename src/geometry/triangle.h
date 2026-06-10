@@ -26,8 +26,11 @@ namespace rt {
             T = (T - dot(T, normal) * normal).normalized();
         }
 
+
         Triangle(Vec3d a, Vec3d b, Vec3d c, Material mat)
-            : Triangle(a, b, c, Vec3d(0,0,0), Vec3d(1,0,0), Vec3d(0,1,0), mat) {}
+            : Triangle(a, b, c, Vec3d(0,0,0), Vec3d(1,0,0), Vec3d(0,1,0), mat) {};
+
+        Triangle() : Triangle(Vec3d(0,0,0), Vec3d(0,0,0), Vec3d(0,0,0), Material{}) {};
 
         std::optional<HitRecord> hit(const Ray& ray, double tmin, double tmax) const override {
             Vec3d E1 = B - A;

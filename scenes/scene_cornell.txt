@@ -1,0 +1,41 @@
+# scenes/scene_cornell.txt
+
+# ------------------------------------------------------------------
+# Camera
+# ------------------------------------------------------------------
+camera 0 3 18    0 3 0    0 1 0    40 0 18
+
+# ------------------------------------------------------------------
+# Cornell box
+# Format plane : point_x point_y point_z  normale_x normale_y normale_z  materiau
+# La normale pointe vers l'intérieur de la boîte
+# ------------------------------------------------------------------
+
+# Sol (y=0, normale vers le haut)
+plane  0 0 0    0 1 0    ceramic
+
+# Plafond (y=10, normale vers le bas)
+plane  0 10 0   0 -1 0   white
+
+# Mur gauche (x=-5, normale vers la droite)
+plane  -5 0 0   1 0 0    red
+
+# Mur droit (x=5, normale vers la gauche)
+plane  5 0 0   -1 0 0    green
+
+# Mur du fond (z=-5, normale vers la caméra)
+plane  0 0 -5   0 0 1    white
+
+# ------------------------------------------------------------------
+# Tore métallique
+# ------------------------------------------------------------------
+torus 0 1.5 0    2.0 0.6    32 16   gold_pbr
+
+# ------------------------------------------------------------------
+# Lumière plafond
+# ------------------------------------------------------------------
+light 0 9.2 0    1.2    20 19 17
+
+# ------------------------------------------------------------------
+# Environment map (optionnel)
+# ------------------------------------------------------------------

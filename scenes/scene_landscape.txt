@@ -1,0 +1,32 @@
+# TP23 — Paysage procédural
+#
+# Terrain 32×32 généré avec bruit de Perlin.
+# Format terrain : N M cell_size height_scale noise_scale noise_amplitude mat
+#   N, M            : taille de la grille (nombre de cellules)
+#   cell_size       : taille d'une cellule en unités monde
+#   height_scale    : multiplicateur vertical global
+#   noise_scale     : fréquence du bruit (plus grand = détail plus fin)
+#   noise_amplitude : amplitude crête-à-crête du bruit de Perlin
+#
+# Le terrain part de (0, 0, 0) et s'étend vers +x et +z.
+# Avec 32 cellules à cell_size=0.6 : terrain 19.2 × 19.2 unités.
+#
+# Rendu :
+#   ./build/raytracer 1.0 64 scenes/scene_landscape.txt > outputs/landscape.ppm
+
+camera  9 8 22   9 1 9   0 1 0   50   0.0   16.0
+
+# Lumière "soleil" — haute, légèrement à droite, chaude
+light  14 14 5   1.5   70 60 45
+
+# Terrain procédural avec bruit Perlin (moss = texture verte/brune)
+terrain  32 32   0.6   2.5   0.15   1.0   perlin_moss
+
+# Quelques sphères décoratives posées sur le terrain
+sphere   5.0  3.5  5.0   0.7   gold_pbr
+sphere   9.0  3.5  4.0   0.6   copper_pbr
+sphere  12.0  3.5  7.0   0.6   glass
+sphere   7.0  3.5  9.0   0.7   silver_pbr
+
+# Environment map (ciel HDR)
+envmap  hdri/qwantani_moon_noon_puresky_4k.hdr

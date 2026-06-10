@@ -31,6 +31,14 @@ namespace rt {
                 box = surrounding_box(box, triangles[i].bounding_box().value());
             return box;
         }
+
+        void translate(const Vec3d& offset) {
+            for (auto& tri : triangles) {
+                tri.A += offset;
+                tri.B += offset;
+                tri.C += offset;
+            }
+        }
     };
 
 }
