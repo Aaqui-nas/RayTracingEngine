@@ -1,10 +1,11 @@
 #pragma once
 #include <vector>
 #include "geometry/triangle.h"
+#include "scene/transform_node.h"
 
 namespace rt {
 
-    class Mesh : public Shape {
+    class Mesh : public Shape, public Transformable<Mesh> {
     public:
         std::vector<Triangle> triangles;
 
@@ -32,13 +33,6 @@ namespace rt {
             return box;
         }
 
-        void translate(const Vec3d& offset) {
-            for (auto& tri : triangles) {
-                tri.A += offset;
-                tri.B += offset;
-                tri.C += offset;
-            }
-        }
     };
 
 }

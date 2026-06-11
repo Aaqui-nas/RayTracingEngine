@@ -1,0 +1,44 @@
+# TP25 — Scene Graph : transformations hiérarchiques
+#
+# Démontre : translate, rotate_y, rotate_x, scale via TransformNode
+#
+# Rendu :
+#   cmake --build build --parallel
+#   ./build/raytracer 1.0 128 scenes/scene_transforms.txt > outputs/transforms.ppm
+
+camera  0 4 12   0 1.5 0   0 1 0   45   0.0  12.0
+
+# Sol
+plane   0.0 0.0 0.0   0.0 1.0 0.0   checker
+
+# Lumières
+light  -4.0  8.0  4.0   0.8   100.0 90.0 70.0
+light   4.0  7.0  3.0   0.6   60.0 80.0 120.0
+
+# ─── Rangée 1 : translations ──────────────────────────────────────────────────
+# Sphère or à gauche, translatee en -3 X
+translate -3 1 0   sphere 0 0 0 1.0 gold_pbr
+
+# Sphère miroir au centre (pas de transform — position directe)
+sphere  0 1 0   1.0   mirror
+
+# Sphère silver à droite, translatee en +3 X
+translate 3 1 0   sphere 0 0 0 1.0 silver_pbr
+
+# ─── Rangée 2 : rotations ─────────────────────────────────────────────────────
+# Tore centré avec rotate_x 90° (tore vertical)
+rotate_x 90   torus  0 3 -3   1.2 0.4 32 16 copper_pbr
+
+# Tore incliné de 45° en Y
+rotate_y 45   torus  0 3 3   1.0 0.35 32 16 gold_pbr
+
+# ─── Rangée 3 : scales ────────────────────────────────────────────────────────
+# Sphère aplatie (scale non-uniforme Y) — teste les normales via (M⁻¹)ᵀ
+scale 1.0 0.4 1.0   sphere 0 1 6   2.0 rough_plastic
+
+# Sphère étirée en X
+scale 5 1.0 1.0   sphere 0 1 -6   0.8 gloss_plastic
+
+# ─── Composition : translate + rotate ─────────────────────────────────────────
+# Tore au sol incliné et déplacé
+translate -4 1.2 -5   rotate_x 75   torus  0 0 0   1.0 0.3 32 16   ceramic

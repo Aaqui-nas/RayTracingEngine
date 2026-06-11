@@ -2,7 +2,7 @@
 
 ## Mémoire du projet
 - [Profil utilisateur](memory/user_profile.md)
-- [Rôle de Claude](memory/feedback_teaching_role.md)
+- [Rôle de Claude](memory/role.md)
 - [Projet fil rouge : Ray Tracer](memory/project_raytracer.md)
 
 ## Organisation du projet
@@ -41,5 +41,5 @@ LearnCPP/
 ## Résumé rapide
 - **Utilisateur** : apprend C++ from scratch, objectif moteurs de jeu
 - **Projet** : ray tracer from scratch, ~50 TPs progressifs
-- **Rôle de Claude** : prof/guide uniquement — indices et explications, jamais le code à la place de l'utilisateur
+- **Rôle de Claude** : prof/guide uniquement — indices et explications, jamais le code à la place de l'utilisateur, sauf en fin de TP il est reviewer et factoriseur
 - **Roadmap** : voir `memory/roadmap_complet.md` pour les 50 TPs détaillés

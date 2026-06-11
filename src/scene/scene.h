@@ -15,7 +15,8 @@ namespace rt {
     class Scene {
     public:
         std::vector<std::shared_ptr<Shape>> objects;
-        std::shared_ptr<BVHNode>  bvh_root;
+        BVHNode*                  bvh_root = nullptr;
+        std::unique_ptr<BVHPool>  bvh_pool;
         std::shared_ptr<EnvMap>   env_map;
         LightList   lights;
         SphereAccel sphere_accel;
@@ -24,16 +25,19 @@ namespace rt {
 
         Scene(Scene&& other) noexcept
             : objects(std::move(other.objects))
-            , bvh_root(std::move(other.bvh_root))
+            , bvh_root(other.bvh_root)
+            , bvh_pool(std::move(other.bvh_pool))
             , env_map(std::move(other.env_map))
             , lights(std::move(other.lights))
-        {}
+        { other.bvh_root = nullptr; }
 
         Scene& operator=(Scene&& other) noexcept {
-            objects  = std::move(other.objects);
-            bvh_root = std::move(other.bvh_root);
-            env_map  = std::move(other.env_map);
-            lights = std::move(other.lights);
+            objects   = std::move(other.objects);
+            bvh_root  = other.bvh_root;
+            bvh_pool  = std::move(other.bvh_pool);
+            env_map   = std::move(other.env_map);
+            lights    = std::move(other.lights);
+            other.bvh_root = nullptr;
             return *this;
         }
 
@@ -53,8 +57,10 @@ namespace rt {
                 [](const auto& obj) { return obj->bounding_box().has_value(); });
 
             objects = unbounded;
-            if (!bounded.empty())
-                bvh_root = std::make_shared<BVHNode>(bounded, 0, (int)bounded.size());
+            if (!bounded.empty()) {
+                bvh_pool = std::make_unique<BVHPool>((int)bounded.size());
+                bvh_root = bvh_pool->build(bounded, 0, (int)bounded.size());
+            }
         }
 
         std::optional<HitRecord> hit(const Ray& ray, double tmin, double tmax) const {

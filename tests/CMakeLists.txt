@@ -21,6 +21,9 @@ add_executable(run_tests
     test_pbr.cpp
     test_concepts.cpp
     test_procedural.cpp
+    test_transform.cpp
+    test_primitives.cpp
+    test_alloc.cpp
     ${CMAKE_SOURCE_DIR}/src/materials/materials.cpp
 )
 target_include_directories(run_tests PRIVATE ${CMAKE_SOURCE_DIR}/src)

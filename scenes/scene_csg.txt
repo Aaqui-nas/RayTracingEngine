@@ -1,0 +1,28 @@
+# TP26 — CSG : Union, Intersection, Différence
+#
+# Colonne gauche  (-4 0 0) : Sphere ∪ Box  → volume sphère + volume cube
+# Colonne centre  ( 0 0 0) : Sphere ∩ Box  → sphère tronquée aux faces du cube
+# Colonne droite  (+4 0 0) : Sphere − Box  → sphère vidée de l'intérieur du cube
+#
+# Rendu :
+#   cmake --build build --parallel
+#   ./build/raytracer 1.0 256 scenes/scene_csg.txt > outputs/csg.ppm
+
+camera  0 3.5 10   0 1 0   0 1 0   45   0.0  10.0
+
+# Sol
+plane   0.0 0.0 0.0   0.0 1.0 0.0   checker
+
+# Lumières
+light  -5.0  8.0  6.0   0.7   90.0 80.0 70.0
+light   5.0  6.0  5.0   0.5   60.0 70.0 100.0
+
+# ─── Colonne gauche : Union ───────────────────────────────────────────────────
+# Sphere r=1 centrée en (-4,1.2,0)  +  Box [-0.8,-0.8,-0.8 → 0.8,0.8,0.8] translatee en (-4,1.2,0)
+csg_union   translate -4 1.2 0  sphere 0 0 0 1.0 gold_pbr   translate -4 1.2 0  box -0.8 -0.8 -0.8 0.8 0.8 0.8 silver_pbr
+
+# ─── Colonne centre : Intersection ───────────────────────────────────────────
+csg_inter   translate 0 1.2 0  sphere 0 0 0 1.0 copper_pbr   translate 0 1.2 0  box -0.8 -0.8 -0.8 0.8 0.8 0.8 ceramic
+
+# ─── Colonne droite : Différence (sphere − box) ───────────────────────────────
+csg_diff    translate 4 1.2 0  sphere 0 0 0 1.0 gloss_plastic   translate 4 1.2 0  box -0.7 -0.7 -0.7 0.7 0.7 0.7 rough_plastic

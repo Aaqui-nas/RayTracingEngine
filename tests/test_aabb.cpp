@@ -198,9 +198,9 @@ TEST_CASE("BVH / rayon frappe la sphère la plus proche (2 sphères)") {
     auto s1 = std::make_shared<Sphere>(Vec3d(0, 0, -2), 0.5, dummy_mat);
     auto s2 = std::make_shared<Sphere>(Vec3d(0, 0, -5), 0.5, dummy_mat);
     std::vector<std::shared_ptr<Shape>> shapes = {s1, s2};
-    BVHNode bvh(shapes, 0, 2);
+    BVHPool pool(2); BVHNode* bvh = pool.build(shapes, 0, 2);
     Ray r(Vec3d(0, 0, 0), Vec3d(0, 0, -1));
-    auto hit = bvh.hit(r, 0.001, 1000.0);
+    auto hit = bvh->hit(r, 0.001, 1000.0);
     REQUIRE(hit.has_value());
     REQUIRE(hit->t == Approx(1.5).epsilon(0.01));
 }
@@ -209,9 +209,9 @@ TEST_CASE("BVH / rayon manque toutes les shapes") {
     auto s1 = std::make_shared<Sphere>(Vec3d(0, 0, -2), 0.5, dummy_mat);
     auto s2 = std::make_shared<Sphere>(Vec3d(0, 0, -5), 0.5, dummy_mat);
     std::vector<std::shared_ptr<Shape>> shapes = {s1, s2};
-    BVHNode bvh(shapes, 0, 2);
+    BVHPool pool(2); BVHNode* bvh = pool.build(shapes, 0, 2);
     Ray r(Vec3d(5, 5, 0), Vec3d(0, 0, -1));
-    REQUIRE_FALSE(bvh.hit(r, 0.001, 1000.0).has_value());
+    REQUIRE_FALSE(bvh->hit(r, 0.001, 1000.0).has_value());
 }
 
 TEST_CASE("BVH / 3 sphères — retourne la plus proche") {
@@ -219,9 +219,9 @@ TEST_CASE("BVH / 3 sphères — retourne la plus proche") {
     auto s2 = std::make_shared<Sphere>(Vec3d(0, 0, -5), 0.5, dummy_mat);
     auto s3 = std::make_shared<Sphere>(Vec3d(0, 0, -8), 0.5, dummy_mat);
     std::vector<std::shared_ptr<Shape>> shapes = {s1, s2, s3};
-    BVHNode bvh(shapes, 0, 3);
+    BVHPool pool(3); BVHNode* bvh = pool.build(shapes, 0, 3);
     Ray r(Vec3d(0, 0, 0), Vec3d(0, 0, -1));
-    auto hit = bvh.hit(r, 0.001, 1000.0);
+    auto hit = bvh->hit(r, 0.001, 1000.0);
     REQUIRE(hit.has_value());
     REQUIRE(hit->t == Approx(1.5).epsilon(0.01));
 }
@@ -230,17 +230,17 @@ TEST_CASE("BVH / rayon rejeté par tmax avant toutes les sphères") {
     auto s1 = std::make_shared<Sphere>(Vec3d(0, 0, -5), 0.5, dummy_mat);
     auto s2 = std::make_shared<Sphere>(Vec3d(0, 0, -8), 0.5, dummy_mat);
     std::vector<std::shared_ptr<Shape>> shapes = {s1, s2};
-    BVHNode bvh(shapes, 0, 2);
+    BVHPool pool(2); BVHNode* bvh = pool.build(shapes, 0, 2);
     Ray r(Vec3d(0, 0, 0), Vec3d(0, 0, -1));
-    REQUIRE_FALSE(bvh.hit(r, 0.001, 2.0).has_value());  // tmax=2, sphères à t≈4.5
+    REQUIRE_FALSE(bvh->hit(r, 0.001, 2.0).has_value());  // tmax=2, sphères à t≈4.5
 }
 
 TEST_CASE("BVH / 1 seule shape") {
     auto s1 = std::make_shared<Sphere>(Vec3d(0, 0, -3), 0.5, dummy_mat);
     std::vector<std::shared_ptr<Shape>> shapes = {s1};
-    BVHNode bvh(shapes, 0, 1);
+    BVHPool pool(1); BVHNode* bvh = pool.build(shapes, 0, 1);
     Ray r(Vec3d(0, 0, 0), Vec3d(0, 0, -1));
-    auto hit = bvh.hit(r, 0.001, 1000.0);
+    auto hit = bvh->hit(r, 0.001, 1000.0);
     REQUIRE(hit.has_value());
     REQUIRE(hit->t == Approx(2.5).epsilon(0.01));
 }

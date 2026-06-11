@@ -154,11 +154,11 @@ static void BM_BVH_Hit(benchmark::State& state) {
         double z = -(i / 10) * 3.0 - 2.0;
         shapes.push_back(std::make_shared<Sphere>(Vec3d(x, 0, z), 0.4, null_mat));
     }
-    BVHNode bvh(shapes, 0, N);
+    BVHPool pool(N); BVHNode* bvh = pool.build(shapes, 0, N);
     Ray r(Vec3d(0.2, 0, 0), Vec3d(0, 0, -1));
 
     for (auto _ : state) {
-        auto hit = bvh.hit(r, 0.001, 1000.0);
+        auto hit = bvh->hit(r, 0.001, 1000.0);
         benchmark::DoNotOptimize(hit);
     }
     state.SetItemsProcessed(state.iterations() * N);

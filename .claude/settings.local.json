@@ -1,7 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "Bash(g++ -std=c++17 -O2 -pthread -o raytracer main.cpp materials.cpp)"
+      "Bash(g++ -std=c++17 -O2 -pthread -o raytracer main.cpp materials.cpp)",
+      "Bash(cmake --build build --parallel)"
     ]
   }
 }

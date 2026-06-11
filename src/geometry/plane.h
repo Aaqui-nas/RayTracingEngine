@@ -1,10 +1,11 @@
 #pragma once
 #include <cmath>
 #include "geometry/shape.h"
+#include "scene/transform_node.h"
 
 namespace rt {
 
-    class Plane : public Shape {
+    class Plane : public Shape, public Transformable<Plane> {
     public:
         Vec3d point;
         Vec3d normal;

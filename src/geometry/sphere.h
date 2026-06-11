@@ -1,10 +1,12 @@
 #pragma once
 #include <cmath>
 #include "geometry/shape.h"
+#include "scene/transform_node.h"
+#include "geometry/shape_traits.h"
 
 namespace rt {
 
-    class Sphere : public Shape {
+    class Sphere : public Shape, public Transformable<Sphere> {
     public:
         Vec3d  center;
         double radius;
@@ -48,4 +50,8 @@ namespace rt {
         }
     };
 
+    template<> struct shape_traits<Sphere> {
+        static constexpr bool is_closed = true;
+        static constexpr bool is_convex = true;
+    };
 }

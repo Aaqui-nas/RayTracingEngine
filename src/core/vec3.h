@@ -1,5 +1,6 @@
 #pragma once
 #include <cmath>
+#include <algorithm>
 #include <ostream>
 
 namespace rt {
@@ -36,6 +37,12 @@ namespace rt {
             if (i == 1) return y;
             return z;
         }
+
+        T& operator[](int i) {
+            if (i == 0) return x;
+            if (i == 1) return y;
+            return z;
+        }
     };
 
     template<typename T>
@@ -68,6 +75,15 @@ namespace rt {
     inline std::ostream& operator<<(std::ostream& os, const Vec3<T>& v) {
         os << v.x << " " << v.y << " " << v.z << " ";
         return os;
+    }
+
+    template<typename T>
+    std::enable_if_t<std::is_floating_point_v<T>, Vec3<uint8_t>>
+    to_unit_range(const Vec3<T>& v) {
+        double x = std::clamp(v.x,static_cast<T>(0),static_cast<T>(1))*255;
+        double y = std::clamp(v.y,static_cast<T>(0),static_cast<T>(1))*255;
+        double z = std::clamp(v.z,static_cast<T>(0),static_cast<T>(1))*255;
+        return Vec3(static_cast<uint8_t>(x),static_cast<uint8_t>(y),static_cast<uint8_t>(z));
     }
 
     using Vec3d = Vec3<double>;
