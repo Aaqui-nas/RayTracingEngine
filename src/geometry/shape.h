@@ -8,7 +8,10 @@
 namespace rt {
     struct Scatter {
         Vec3d attenuation;
-        Ray scattered;
+        Ray   scattered;
+        // Pour MIS direct : f_r(L) × 255 × π, même échelle que attenuation.
+        // Si null, utilise attenuation (convient pour Lambertian et métal).
+        std::function<Vec3d(const Vec3d&)> brdf_eval;
     };
 
     struct HitRecord;

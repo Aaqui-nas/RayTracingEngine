@@ -105,11 +105,12 @@ TEST_CASE("G_Smith / symétrique en NdotL et NdotV") {
 }
 
 TEST_CASE("G_Smith / valeur de référence") {
-    // k = alpha²/2 avec alpha = 0.5² = 0.25, k = 0.03125
-    // G1(0.8) = 0.8 / (0.8*(1-0.03125) + 0.03125) = 0.8 / (0.775 + 0.03125) ≈ 0.8/0.8063 ≈ 0.992
+    // Schlick-GGX IBL : k = alpha/2 = roughness²/2
+    // alpha = 0.5² = 0.25, k = 0.125
+    // G1(0.8) = 0.8 / (0.8*(1-0.125) + 0.125) = 0.8 / (0.7 + 0.125) = 0.8/0.825 ≈ 0.9697
     double roughness = 0.5;
     double alpha = roughness * roughness;
-    double k = alpha * alpha / 2.0;
+    double k = alpha / 2.0;   // formule corrigée
     auto G1 = [&](double NdotX) {
         return NdotX / (NdotX * (1.0 - k) + k);
     };

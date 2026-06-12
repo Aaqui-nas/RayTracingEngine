@@ -15,7 +15,7 @@ namespace rt {
 
         inline double G_Smith(double NdotL, double NdotV, double roughness) {
             double alpha = roughness*roughness;
-            double k = alpha * alpha / 2;
+            double k = alpha / 2;   // Schlick-GGX IBL : k = α/2 = roughness²/2
             auto G1 = [k](double NdotX) -> double {
                 return NdotX / (NdotX*(1-k) + k);
             };
@@ -105,7 +105,18 @@ namespace rt {
             throughput.y = std::clamp(throughput.y, 0.0, 255.0);
             throughput.z = std::clamp(throughput.z, 0.0, 255.0);
 
-            return Scatter{throughput, Ray(rec.point, L)};
+            // brdf_eval évalue f_r à une direction L quelconque (lumière directe MIS).
+            // Retourne brdf × 255 × π pour être à la même échelle que l'attenuation Lambertian
+            // dans la formule directe : mul(brdf, radiance) * cos / (pdf * π).
+            Vec3d albedo_norm = albedo / 255.0;
+            Vec3d V_cap = V, N_cap = rec.normal;
+            auto eval = [albedo_norm, roughness, metalness, ior, V_cap, N_cap](const Vec3d& L_dir) -> Vec3d {
+                return physics::brdf_cook_torrance(
+                    albedo_norm, roughness, metalness, ior,
+                    N_cap, V_cap, L_dir.normalized()
+                ) * (255.0 * pi);
+            };
+            return Scatter{throughput, Ray(rec.point, L), std::move(eval)};
         };
     }
 }

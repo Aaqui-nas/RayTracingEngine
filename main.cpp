@@ -1,98 +1,48 @@
 #include <iostream>
-#include <thread>
-#include <atomic>
-#include <vector>
-#include <mutex>
 #include <map>
-#include <cmath>
+#include <string>
+#include <string_view>
 #include "camera/camera.h"
 #include "materials/materials.h"
 #include "scene/scene_loader.h"
+#include "core/tile_renderer.h"
+#include "core/post_process.h"
 
 using namespace rt;
 
-std::mutex cerr_mutex;
+int main(int argc, char* argv[]) {
+    std::string pp_mode;
+    bool spiral = false;
+    std::vector<std::string> positional;
 
-struct Pixel { int r, g, b; };
+    for (int i = 1; i < argc; ++i) {
+        std::string_view arg(argv[i]);
+        if (arg.starts_with("--pp="))
+            pp_mode = std::string(arg.substr(5));
+        else if (arg == "--spiral")
+            spiral = true;
+        else
+            positional.push_back(std::string(arg));
+    }
 
-static double clamp(double v, double lo, double hi) {
-    return v < lo ? lo : v > hi ? hi : v;
-}
-
-static Vec3d gamma(Vec3d v, double g) {
-    v = v / 255;
-    return 255 * Vec3d(std::pow(v.x, 1.0/g), std::pow(v.y, 1.0/g), std::pow(v.z, 1.0/g));
-}
-
-static Vec3d ray_color(const Ray& ray, const Scene& scene, int depth) {
-    auto sky = [&]() -> Vec3d {
-        if (scene.env_map) {
-            Vec3d c = scene.env_map->background(ray.direction.normalized());
-            c = c * 2.0;
-            return Vec3d(c.x / (1 + c.x), c.y / (1 + c.y), c.z / (1 + c.z)) * 255.0;
-        }
-        Vec3d norm = ray.direction.normalized();
-        double y = (norm.y + 1) / 2;
-        return (1-y) * Vec3d(255,255,255) + y * Vec3d(128,178,255);
+    auto is_number = [](const std::string& s) {
+        try { std::stod(s); return true; } catch (...) { return false; }
     };
 
-    if (depth == 0) return sky();
+    double      multiplier = 1.0;
+    int         samples    = 64;
+    std::string scene_path = "scenes/scene_dof.txt";
 
-    if (auto rec = scene.hit(ray, 0.001, 1000)) {
-        Vec3d emitted = rec-> emission;
-        auto scatter = rec->material(ray, *rec);
-        Vec3d direct(0, 0, 0);
-        if (!scene.lights.empty() && scatter) {
-            auto ls = scene.lights.sample(rec->point, rng_dist01(rng), rng_dist01(rng), rng_dist01(rng));
-            if (ls && ls->pdf > 0) {
-                Vec3d shadow_origin = rec->point + 1e-4 * rec->normal;
-                Vec3d light_point   = rec->point + ls->direction * ls->distance;
-                if (!scene.occluded(shadow_origin, light_point)) {
-                    double cos_theta = std::max(0.0, dot(ls->direction.normalized(), rec->normal));
-                    double pdf_brdf = cos_theta / pi;
-                    direct = mul(scatter->attenuation,ls->radiance) *cos_theta/(ls->pdf*pi);
-                    direct *= mis_weight(ls->pdf, pdf_brdf);
-                }
-            }
-        }
-
-        if (scatter)
-            return direct + emitted
-                   + mul(scatter->attenuation / 255.0,
-                         ray_color(scatter->scattered, scene, depth - 1));
-        return direct + emitted;
+    if (!positional.empty() && is_number(positional[0])) {
+        multiplier = std::stod(positional[0]);
+        if (positional.size() > 1 && is_number(positional[1]))
+            samples = std::stoi(positional[1]);
+        if (positional.size() > 2)
+            scene_path = positional[2];
+    } else if (!positional.empty()) {
+        scene_path = positional[0];
     }
-    return sky();
-}
 
-static void render_rows(Camera camera, int row_start, int row_end, int width, int height,
-                        const Scene& scene, std::vector<Pixel>& pixels,
-                        std::atomic<int>& lines_done, int samples)
-{
-    for (int i = row_start; i < row_end; i++) {
-        for (int j = 0; j < width; j++) {
-            Vec3d color(0, 0, 0);
-            for (int s = 0; s < samples; s++) {
-                double u = ((double)j + rng_dist01(rng)) / (width  - 1);
-                double v = ((double)i + rng_dist01(rng)) / (height - 1);
-                color += ray_color(camera.get_ray(u, v), scene, 8);
-            }
-            color = gamma(color / samples, 2.2);
-            color = Vec3d(clamp(color.x, 0, 255), clamp(color.y, 0, 255), clamp(color.z, 0, 255));
-            pixels[i * width + j] = Pixel{(int)color.x, (int)color.y, (int)color.z};
-        }
-        ++lines_done;
-        {
-            std::lock_guard<std::mutex> lock(cerr_mutex);
-            std::cerr << "\rLignes traitées : " << lines_done << "/" << height << std::flush;
-        }
-    }
-}
-
-int main(int argc, char* argv[]) {
-    double      multiplier = argc > 1 ? std::stod(argv[1]) : 1.0;
-    int         samples    = argc > 2 ? std::stoi(argv[2]) : 64;
-    std::string scene_path = argc > 3 ? argv[3] : "scenes/scene_dof.txt";
     const int width        = (int)(400 * multiplier);
     const int height       = (int)(225 * multiplier);
     const double aspect_ratio = (double)width / height;
@@ -102,30 +52,46 @@ int main(int argc, char* argv[]) {
     Scene scene = load_scene(scene_path, materials, camera, aspect_ratio);
     scene.build_bvh();
 
-    std::vector<Pixel> pixels(width * height);
-    std::atomic<int>   lines_done(0);
+    RenderOutput out = render_tiles_hdr(scene, camera, width, height, samples, 16, spiral);
+    std::cerr << "\n";
 
-    int num_threads = std::thread::hardware_concurrency();
-    if (num_threads == 0) num_threads = 4;
-    int rows_per_thread = height / num_threads;
-
-    std::vector<std::thread> threads;
-    for (int i = 0; i < num_threads; i++) {
-        int end = (i == num_threads - 1) ? height : (i + 1) * rows_per_thread;
-        threads.emplace_back(render_rows, camera, i * rows_per_thread, end,
-                             width, height, std::cref(scene),
-                             std::ref(pixels), std::ref(lines_done), samples);
+    PostPipeline pipeline;
+    if (pp_mode == "tonemapping") {
+        pipeline
+            .add(tone_map_aces())
+            .add(gamma_correct(2.2));
+    } else if (pp_mode == "bloom") {
+        pipeline
+            .add(bloom_pass())
+            .add(tone_map_aces())
+            .add(gamma_correct(2.2));
+    } else if (pp_mode == "ssao") {
+        pipeline
+            .add(ssao_pass(std::move(out.depth), std::move(out.normals), std::move(out.positions)))
+            .add(tone_map_aces())
+            .add(gamma_correct(2.2));
+    } else if (pp_mode == "all") {
+        pipeline
+            .add(ssao_pass(std::move(out.depth), std::move(out.normals), std::move(out.positions)))
+            .add(bloom_pass())
+            .add(tone_map_aces())
+            .add(gamma_correct(2.2));
+    } else {
+        // Mode brut : pas de tone mapping, mais gamma minimal pour éviter une image trop sombre.
+        pipeline.add(gamma_correct(2.2));
     }
-    for (auto& t : threads) t.join();
+    pipeline.apply(out.color);
 
     std::cout << "P3\n" << width << " " << height << "\n255\n";
     for (int i = height - 1; i >= 0; i--) {
         for (int j = 0; j < width; j++) {
-            const Pixel& p = pixels[i * width + j];
-            std::cout << p.r << " " << p.g << " " << p.b << " ";
+            const PixelHDR& p = out.color.at(j, i);
+            int r = (int)(std::clamp(p.r, 0.0, 1.0) * 255);
+            int g = (int)(std::clamp(p.g, 0.0, 1.0) * 255);
+            int b = (int)(std::clamp(p.b, 0.0, 1.0) * 255);
+            std::cout << r << " " << g << " " << b << " ";
         }
         std::cout << "\n";
     }
-    std::cerr << std::endl;
     return 0;
 }

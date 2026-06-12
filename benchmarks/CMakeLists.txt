@@ -20,6 +20,7 @@ add_executable(run_benchmarks
     bench_procedural.cpp
     bench_simd.cpp
     bench_alloc.cpp
+    bench_threadpool.cpp
     ${CMAKE_SOURCE_DIR}/src/materials/materials.cpp
 )
 target_include_directories(run_benchmarks PRIVATE ${CMAKE_SOURCE_DIR}/src)
